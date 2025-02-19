@@ -199,7 +199,7 @@ R03-SOC/
 
 Le projet ici consiste à créer tois (3) machines virtuelles avec comme sujet :
 
-    -   Le mot d'ordre de l'entreprise est simple : **LE PING ENTRE LES MACHINES EST STRICTEMENT INTERDIT**
+-   Le mot d'ordre de l'entreprise est simple : **LE PING ENTRE LES MACHINES EST STRICTEMENT INTERDIT**
 
 Ainsi, le but étant de générer des logs selon toute tentative de ping et permettre
 de les intercepter et de les afficher dans le dashboard de wazuh.

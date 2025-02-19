@@ -12,7 +12,7 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
   - [II - Problématique \& Objectifs](#ii---problématique--objectifs)
     - [A - Problématique](#a---problématique)
     - [B - Objectifs](#b---objectifs)
-  - [Prérequis techniques](#prérequis-techniques)
+  - [III - Prérequis techniques](#iii---prérequis-techniques)
   - [Tableau des Outils \& Concepts](#tableau-des-outils--concepts)
     - [Tableau des Outils](#tableau-des-outils)
     - [Concepts](#concepts)
@@ -77,7 +77,37 @@ Ce projet me permet de répondre avant tout au besoin **technique** lié à l'`a
 
 <br>
 
-## Prérequis techniques
+## III - Prérequis techniques
+
+1. **Connaissances préalables**
+
+    - Administration système (`Linux` / `Windows`).
+    - Notions de réseaux (`TCP/IP`, `routage`).
+
+2. **Environnement matériel et logiciel**
+
+    - **Vagrant** et **VirtualBox** installés et fonctionnels.
+    - **Git** ( _fortement recommandé_ ) pour cloner et gérer l’évolution du projet.
+    - **Configuration personnel** :
+
+        - **RAM** : `32 GO`
+        - **Système d'exploitation** : `Windows 11`
+        - **Processeur** : `Intel(R) Core(TM) i5-10600KF CPU @ 4.10GHz`
+
+> **Note**<br>
+> L'image **Ubuntu 20.04** utilisées est une Image déployé par `Bento`. C'est une personne qui met à disposition de la communauté
+> différentes images relativement légères en mémoire. Malgré la version **dépassées**, elle me permet de ne pas consommer trop en ressource et de permettre d'être opérationnel plus rapidement. Enfin, je déploie un **script** lors de l'installation d'une quelconque VM pour passer le système en français.
+
+3. **Connectivité**
+
+    - Un accès à internet, indispensable pour me permettre de télécharger les dépendances et maintenir l’environnement à jour.
+    - Je utilise le réseau **BRIDGE**.
+
+**Pourquoi BRIDGE ?**<br>
+Ce type de réseau me permet de rentrer en contact avec toutes les machines virtuelles (VM) déployées, mais aussi, d'appartenir au réseau de l'hôte. En l'occurance pour moi, mon système Windows 11, ce qui me sera utile afin d'éviter de déployer une machine virtuel tournant sur windows.
+
+**Pourquoi ne pas utiliser le réseau NAT ?**<br>
+Ce type de réseau permet à chacune des machines virtuelles d'accéder à internet mais empêche la communication entre chaque machine déployée.
 
 <br>
 

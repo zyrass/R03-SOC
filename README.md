@@ -25,6 +25,7 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
       - [2 - Schéma détaillé réalisé avec FigJam](#2---schéma-détaillé-réalisé-avec-figjam)
     - [C - Réalisation du schéma sur la configuration réseau utilisé](#c---réalisation-du-schéma-sur-la-configuration-réseau-utilisé)
   - [VII - Déploiements des nombreux scripts déjà préparés en amont](#vii---déploiements-des-nombreux-scripts-déjà-préparés-en-amont)
+  - [VIII - Déploiements d'un script pour télécharger l'assistant d'installation de wazuh](#viii---déploiements-dun-script-pour-télécharger-lassistant-dinstallation-de-wazuh)
   - [Introductions de mise en route](#introductions-de-mise-en-route)
   - [Ordre de déploiement et pourquoi](#ordre-de-déploiement-et-pourquoi)
   - [Perspective d'évolution possibles](#perspective-dévolution-possibles)
@@ -234,6 +235,14 @@ Liste des fichiers qui ont été déployé dans le répertoire `shared/config/`
 
 Ces fichiers sont indispensable pour le Vagrantfile.
 Les autres scripts arriveront apès la rédaction du Vagrantfile.
+
+<br>
+
+## VIII - Déploiements d'un script pour télécharger l'assistant d'installation de wazuh
+
+Dans la première VM (**SIEM**), il est question dans le Vagrantfile d'avoir un script pour télécharger l'assistant de wazuh (**wazuh-install.sh**). Pour ça le script a été déployé dans le répertoire `shared/scripts/`
+
+-   **`install_wazuh.sh`** : _Permet de télécharger l'assistant d'installation de Wazuh._
 
 <br>
 

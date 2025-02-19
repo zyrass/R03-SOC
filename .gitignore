@@ -1,0 +1,14 @@
+# Ignorer les dossiers .vagrant/ créés par Vagrant
+.vagrant/
+
+# Ignorer les fichiers de configuration spécifiques à l'utilisateur
+*.vagrant.d/
+
+# Ignorer les fichiers de verrouillage Vagrant
+*.lock
+
+# Ignorer les fichiers de logs Vagrant
+*.log
+
+# Ignorer les fichiers temporaires
+*.tmp

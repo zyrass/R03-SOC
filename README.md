@@ -24,6 +24,7 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
       - [1 - Schéma réalisé avec mermaid](#1---schéma-réalisé-avec-mermaid)
       - [2 - Schéma détaillé réalisé avec FigJam](#2---schéma-détaillé-réalisé-avec-figjam)
     - [C - Réalisation du schéma sur la configuration réseau utilisé](#c---réalisation-du-schéma-sur-la-configuration-réseau-utilisé)
+  - [VII - Déploiements des nombreux scripts déjà préparés en amont](#vii---déploiements-des-nombreux-scripts-déjà-préparés-en-amont)
   - [Introductions de mise en route](#introductions-de-mise-en-route)
   - [Ordre de déploiement et pourquoi](#ordre-de-déploiement-et-pourquoi)
   - [Perspective d'évolution possibles](#perspective-dévolution-possibles)
@@ -221,6 +222,18 @@ de les intercepter et de les afficher dans le dashboard de wazuh.
 ### C - Réalisation du schéma sur la configuration réseau utilisé
 
 ![configuration_réseau](./images/configuration_reseau.png)
+
+<br>
+
+## VII - Déploiements des nombreux scripts déjà préparés en amont
+
+Liste des fichiers qui ont été déployé dans le répertoire `shared/config/`
+
+-   **`configure_vm.sh`** : _Permet d'installer Postfix et d'éviter que l'installation ne plante._
+-   **`configure_locale_fr.sh`** : _Comme expliquer précédemment, ce script permet de passer le système en français._
+
+Ces fichiers sont indispensable pour le Vagrantfile.
+Les autres scripts arriveront apès la rédaction du Vagrantfile.
 
 <br>
 

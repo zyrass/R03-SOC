@@ -1,0 +1,44 @@
+---
+title: HomeLab - Annexe 03 - Mise en Œuvre d’un SOC | Réseau Privée
+---
+
+flowchart TB
+
+  HOTE((Windows 11<br>HÔTE<br>192.168.56.1))
+
+  subgraph VM_A [" "]
+    SIEM[Ubuntu SIEM - VM 1<br>192.168.56.10]
+  end
+  
+  subgraph VM_B [" "]
+    VM2[Ubuntu - VM 2<br>192.168.56.20]
+  end
+
+  subgraph VM_C [" "]
+    VM3[Ubuntu - VM 3<br>192.168.56.30]
+  end
+
+  HOTE -->|Démarre|SIEM & VM2 & VM3
+
+  %% Palette de couleurs flat et classes (https://flatuicolors.com/palette/es)
+  classDef hote fill:#f7f1e3,stroke:#aaa69d,stroke-width:1px,color:#2C3E50
+  classDef vm fill:#706fd3,stroke:#474787,stroke-width:1px,color:#FFFFFF
+  classDef ping fill:#ff5252,stroke:#b33939,stroke-width:1px,color:#2C3E50
+  classDef wazuh_agent fill:#33d9b2,stroke:#218c74,stroke-width:1px,color:#2C3E50
+  classDef wazuh_server fill:#34ace0,stroke:#227093,stroke-width:1px,color:#FFFFFF
+  classDef wazuh_indexer fill:#34ace0,stroke:#227093,stroke-width:1px,color:#FFFFFF
+  classDef wazuh_dashboard fill:#34ace0,stroke:#227093,stroke-width:1px,color:#FFFFFF
+  classDef none fill:none,stroke:none,color:#FFFFFF
+  classDef log fill:#ffda79,stroke:#ccae62,stroke-width:1px,color:#000000
+  classDef bg fill:#f9f9f9,stroke:#afafaf,stroke-width:1px,color:#000000
+
+  %% Affectation des classes
+  class HOTE hote
+  class SIEM,VM2,VM3 vm
+  class PING ping
+  class LOG_DISPONIBLE log
+  class WAZUH_AGENT_VMB,WAZUH_AGENT_VMC wazuh_agent
+  class WAZUH_SERVER wazuh_server
+  class WAZUH_INDEXER wazuh_indexer
+  class WAZUH_DASHBOARD wazuh_dashboard
+  class TOP,VM_A,VM_B,VM_C bg

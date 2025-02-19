@@ -18,8 +18,14 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
     - [B - Outils utilisés dans mon SOC minimal](#b---outils-utilisés-dans-mon-soc-minimal)
     - [C - Outils qui peuvent-être inclus pour un socle plus complet](#c---outils-qui-peuvent-être-inclus-pour-un-socle-plus-complet)
   - [V - Structure du dépôt GitHub](#v---structure-du-dépôt-github)
-  - [Ordre de déploiement et pourquoi](#ordre-de-déploiement-et-pourquoi)
+  - [VI - Idée simulé du projet](#vi---idée-simulé-du-projet)
+    - [A - L'idée](#a---lidée)
+    - [B - Réalisation des schémas représentant l'idée du projet du soc minimale](#b---réalisation-des-schémas-représentant-lidée-du-projet-du-soc-minimale)
+      - [1 - Schéma réalisé avec mermaid](#1---schéma-réalisé-avec-mermaid)
+      - [2 - Schéma détaillé réalisé avec FigJam](#2---schéma-détaillé-réalisé-avec-figjam)
+    - [C - Réalisation du schéma sur la configuration réseau utilisé](#c---réalisation-du-schéma-sur-la-configuration-réseau-utilisé)
   - [Introductions de mise en route](#introductions-de-mise-en-route)
+  - [Ordre de déploiement et pourquoi](#ordre-de-déploiement-et-pourquoi)
   - [Perspective d'évolution possibles](#perspective-dévolution-possibles)
   - [Conclusion](#conclusion)
 
@@ -187,11 +193,42 @@ R03-SOC/
 
 <br>
 
-## Ordre de déploiement et pourquoi
+## VI - Idée simulé du projet
+
+### A - L'idée
+
+Le projet ici consiste à créer tois (3) machines virtuelles avec comme sujet :
+
+    -   Le mot d'ordre de l'entreprise est simple : **LE PING ENTRE LES MACHINES EST STRICTEMENT INTERDIT**
+
+Ainsi, le but étant de générer des logs selon toute tentative de ping et permettre
+de les intercepter et de les afficher dans le dashboard de wazuh.
+
+1. Une VM (**siem**) avec `wazuh-indexer`, `wazuh-server`, `wazuh-dashboard`.
+2. Une VM (**attaquante**) avec `wazuh-agent` qui aura été installé et qui **ne déclenchera aucun log**.
+3. Une VM (**cible**) avec également `wazuh-agent` qui aura été installé et qui déclenchera des logs qui seront envoyé à `wazuh-server`.
+
+### B - Réalisation des schémas représentant l'idée du projet du soc minimale
+
+#### 1 - Schéma réalisé avec mermaid
+
+![schema_homelab](./images/shema_homelab.png)
+
+#### 2 - Schéma détaillé réalisé avec FigJam
+
+![schema_homelab_détaillés](./images/shema_homelab_detailles.png)
+
+### C - Réalisation du schéma sur la configuration réseau utilisé
+
+![configuration_réseau](./images/configuration_reseau.png)
 
 <br>
 
 ## Introductions de mise en route
+
+<br>
+
+## Ordre de déploiement et pourquoi
 
 <br>
 

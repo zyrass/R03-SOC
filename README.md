@@ -26,6 +26,12 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
     - [C - Réalisation du schéma sur la configuration réseau utilisé](#c---réalisation-du-schéma-sur-la-configuration-réseau-utilisé)
   - [VII - Déploiements des nombreux scripts déjà préparés en amont](#vii---déploiements-des-nombreux-scripts-déjà-préparés-en-amont)
   - [VIII - Déploiements d'un script pour télécharger l'assistant d'installation de wazuh](#viii---déploiements-dun-script-pour-télécharger-lassistant-dinstallation-de-wazuh)
+  - [IX - Création du Vagrantfile](#ix---création-du-vagrantfile)
+    - [A - Création du fichier](#a---création-du-fichier)
+    - [B - Vérification de la bonne conformité Vagrantfile](#b---vérification-de-la-bonne-conformité-vagrantfile)
+    - [C - Déploiement des VMs](#c---déploiement-des-vms)
+    - [D - Résultat d'un déploiement en une seule commande :](#d---résultat-dun-déploiement-en-une-seule-commande-)
+    - [E - Démarrage de la première VM (SIEM)](#e---démarrage-de-la-première-vm-siem)
   - [Introductions de mise en route](#introductions-de-mise-en-route)
   - [Ordre de déploiement et pourquoi](#ordre-de-déploiement-et-pourquoi)
   - [Perspective d'évolution possibles](#perspective-dévolution-possibles)
@@ -246,6 +252,190 @@ Dans la première VM (**SIEM**), il est question dans le Vagrantfile d'avoir un 
 
 <br>
 
+## IX - Création du Vagrantfile
+
+Ce fichier est fondamentale à la bonne installation du homelab. Tout découle de sa configuration entièrement automatisé.
+
+### A - Création du fichier
+
+```rb
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Définition des variables d'environnement
+def get_first_bridge_interface
+  # Obtenir la liste des interfaces
+  bridges = `VBoxManage list bridgedifs`
+  # Trouver la première interface qui n'est pas Hyper-V
+  bridges.split("\n").each do |line|
+    if line.start_with?("Name:") && !line.include?("Hyper-V")
+      return line.split(":")[1].strip.gsub('"', '')
+    end
+  end
+  nil
+end
+
+# Permet d'éviter toute intéraction avec l'utilisateur
+# dans le choix de l'interface réseau
+BRIDGE_INTERFACE = get_first_bridge_interface()
+
+# Configuration des VMs
+NODES = {
+  'vm1' => {
+    hostname: 'r03-vm1-siem',
+    ip_private: '192.168.56.10',
+    memory: 8192,
+    cpus: 4,
+    scripts: ['wazuh']
+  },
+  'vm2' => {
+    hostname: 'r03-vm2-attaquant',
+    ip_private: '192.168.56.20',
+    memory: 1024,
+    cpus: 1,
+    scripts: []
+  },
+  'vm3' => {
+    hostname: 'r03-vm3-cible',
+    ip_private: '192.168.56.30',
+    memory: 1024,
+    cpus: 1,
+    scripts: []
+  }
+}
+
+Vagrant.configure("2") do |config|
+
+  NODES.each do |node_name, node_config|
+    config.vm.define node_name do |node|
+
+      # Configuration de base
+      node.vm.box = "bento/ubuntu-20.04"
+      node.vm.hostname = node_config[:hostname]
+
+      # Configuration du provider VirtualBox
+      node.vm.provider "virtualbox" do |vb|
+        vb.name = "Homelab-vagrant-[R03]-[#{node_name}]"
+        vb.memory = node_config[:memory]
+        vb.cpus = node_config[:cpus]
+      end
+
+      # Configuration réseau
+      node.vm.network "private_network", ip: node_config[:ip_private], auto_config: true, bridge: BRIDGE_INTERFACE
+
+      # Dossier partagé
+      node.vm.synced_folder "shared", "/home/vagrant/shared"
+
+      # Scripts de provisioning communs
+      node.vm.provision "shell", path: "shared/config/configure_locale_fr.sh"
+      node.vm.provision "shell", path: "shared/config/configure_vm.sh"
+
+      # Scripts spécifiques pour installer ou télécharger des outils
+      node_config[:scripts].each do |script|
+        node.vm.provision "shell", path: "shared/scripts/install_#{script}.sh"
+      end
+    end
+  end
+
+end
+```
+
+### B - Vérification de la bonne conformité Vagrantfile
+
+```bash
+# Contrôler la validité du Vagrantfile avec la commande :
+vagrant validate # Doit retourner -> "Vagrantfile validated successfully."
+```
+
+### C - Déploiement des VMs
+
+Le déploiement des VM se fait de deux façons :
+
+```bash
+# 1 - Déploiement en une seule fois
+vagrant up
+
+# 2 - Déploiement VM / VM
+vagrant up <nom_vm> # pour mon cas c'est vm1 || vm2 || vm3
+```
+
+### D - Résultat d'un déploiement en une seule commande :
+
+![vagrantfile_1](./images/vagrantfile/vagrantfile_1.png)
+
+-   _figure : 3 VMs reconnus et installation de la première_
+
+<br>
+
+![vagrantfile_2](./images/vagrantfile/vagrantfile_2.png)
+
+-   _figure : Installation de la langue française sur la VM1_
+
+<br>
+
+![vagrantfile_3](./images/vagrantfile/vagrantfile_3.png)
+
+-   _figure : Enchaînement sur l'installation de Postfix_
+
+<br>
+
+![vagrantfile_4](./images/vagrantfile/vagrantfile_4.png)
+
+-   _figure : Fin d'installation de la VM1 et passage à l'installation de la VM2_
+
+<br>
+
+![vagrantfile_5](./images/vagrantfile/vagrantfile_5.png)
+
+-   _figure : Fin d'installation de la VM2 et passage à l'installation de la VM3_
+
+> **NOTE IMPORTANTE**<br>
+> Il faut remarquer ici que le script concernant le téléchargement de l'assistant d'installation de wazuh ne s'est pas déclenché à la fin de l'installation de Postfix sur la VM2.
+
+<br>
+
+![vagrantfile_6](./images/vagrantfile/vagrantfile_6.png)
+
+-   _figure : Fin d'installation de la VM3. **Aucune erreur !!**_
+
+Les trois machines virtuelles sont prête et disponible dans Virtualbox. (`On ne lancera pas les VM de là.`).
+
+![vagrantfile_7](./images/vagrantfile/vagrantfile_7.png)
+
+### E - Démarrage de la première VM (SIEM)
+
+Le But ici est de lancer la première VM et de contrôler quelques étapes importante. Pour ce faire je lance la commande :
+
+```bash
+# Se connecter en ssh sur "vm1"
+vagrant ssh vm1
+```
+
+**Les étapes à contrôler** :
+
+-   [x] Contrôler la présence du script **`wazuh-install.sh`**
+    ```bash
+    # Affiche la liste des fichiers
+    ls
+    ```
+-   [x] Connaître l'IP de la machine virtuelle pour savoir si elle correspond bien à `192.168.56.10`. avec la commande :
+    ```bash
+    # Affiche l'ip de la machine
+    ip a
+    ```
+-   [x] Ping la VM2 (`192.168.56.20`)
+    ```bash
+    # Ping sur la VM2 en définissant un nombre de paquet avec l'option -c
+    ping 192.168.56.20 -c 3
+    ```
+-   [x] Ping la VM3 (`192.168.56.30`)
+    ```bash
+    # Ping sur la VM3 en définissant un nombre de paquet avec l'option -c
+    ping 192.168.56.30 -c 3
+    ```
+
+<br>
+
 ## Introductions de mise en route
 
 <br>
@@ -259,3 +449,7 @@ Dans la première VM (**SIEM**), il est question dans le Vagrantfile d'avoir un 
 <br>
 
 ## Conclusion
+
+```
+
+```

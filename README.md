@@ -9,9 +9,9 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
 - [HomeLab - Annexe 03 - Mise en Œuvre d’un SOC](#homelab---annexe-03---mise-en-œuvre-dun-soc)
   - [Sommaire](#sommaire)
   - [I - Introduction générale du projet](#i---introduction-générale-du-projet)
-  - [Problématique \& Objectifs](#problématique--objectifs)
-    - [Problématique](#problématique)
-    - [Objectifs](#objectifs)
+  - [II - Problématique \& Objectifs](#ii---problématique--objectifs)
+    - [A - Problématique](#a---problématique)
+    - [B - Objectifs](#b---objectifs)
   - [Prérequis techniques](#prérequis-techniques)
   - [Tableau des Outils \& Concepts](#tableau-des-outils--concepts)
     - [Tableau des Outils](#tableau-des-outils)
@@ -37,11 +37,43 @@ Dans le climat actuel où les **menaces informatiques** évoluent en continu, la
 
 <br>
 
-## Problématique & Objectifs
+## II - Problématique & Objectifs
 
-### Problématique
+### A - Problématique
 
-### Objectifs
+Ma problématique se pose sur l'inconnu. J'ai eu un cours théorique très expéditif dans mon centre de formation qu'il m'était impossible sans recherche personnel de pouvoir mettre en pratique celui-ci. Mes différentes questions était ?
+
+-   Où se positionne le SOC dans la gouvernance ?
+-   Comment construire un **SOC complet** à l’aide de **logiciels open-source** ?
+    -   couvrant la détection réseau
+    -   la corrélation d’événements
+    -   l’analyse forensique
+    -   la gestion d’incidents ?
+
+Tout en **optimisant la courbe d’apprentissage**, avec comme seules ressources:
+
+-   une bonne connexion internet
+-   une **recherche personnelle** approfondie
+-   une première expérience en virtualisation ce qui m'amène à utiliser et optimiser mon ordinateur personnel.
+
+### B - Objectifs
+
+-   **Objectif principal**  
+    Simuler en concevant et en déployant **pas à pas** une infrastructure SOC, en utilisant uniquement des solutions/outils **open-source** reconnus et libres d’utilisation.
+
+-   **Objectifs secondaires**
+    1. **Assimiler** la composante d'un SOC minimale.
+    2. **Découvrir** les bases du SIEM (`Wazuh-indexer`,`Wazuh-server`,`Wazuh-dashboard`).
+    3. **Comprendre sans le mettre en pratique** ici sur l'importance d'un IDS/IPS qui permettrait d'obtenir des logs plus riche. (Quelques exemple de configuration seront tout de même proposer pour configurer `Wazuh agent`).
+    4. **Réaliser** l’importance de chaque brique dans le processus de **détection** et de **réponse**.
+    5. **Établir** une **feuille de route** permettant de relier logiquement tous les composants (`collecte`, `analyse`, `corrélation`, `réaction`).
+    6. **Apprendre la réponse à incident** et à la **forensique** via des outils tels que `Velociraptor`; `Zeek`.
+
+Ce projet me permet de répondre avant tout au besoin **technique** lié à l'`annexe R03` que je dois réaliser afin d'acquérir **une première experience concrète** dans le déploiement et la gestion d'un SOC moderne qui pour rappel, dans mon cas, **en utilisant exclusivement des outils open-source**. Chaque composant est soigneusement sélectionné et documenté pour offrir une expérience d'apprentissage optimale, tout en respectant les standards de l'industrie ( _selon mes recherches_ ).
+
+> **NOTE IMPORTANTE**<br>
+> J'ai lors de mes tests rencontrer des problématiques majeurs lié aux droits lors de la réalisation du **homelab**.
+> Pour solutionner ça, j'ai été contraint de modifier les commandes officiel pour inclure **sudo**.
 
 <br>
 

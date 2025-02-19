@@ -17,6 +17,7 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
     - [A - C'est quoi un SOC/SIEM/EDR/SOAR ?](#a---cest-quoi-un-socsiemedrsoar-)
     - [B - Outils utilisés dans mon SOC minimal](#b---outils-utilisés-dans-mon-soc-minimal)
     - [C - Outils qui peuvent-être inclus pour un socle plus complet](#c---outils-qui-peuvent-être-inclus-pour-un-socle-plus-complet)
+  - [V - Structure du dépôt GitHub](#v---structure-du-dépôt-github)
   - [Ordre de déploiement et pourquoi](#ordre-de-déploiement-et-pourquoi)
   - [Introductions de mise en route](#introductions-de-mise-en-route)
   - [Perspective d'évolution possibles](#perspective-dévolution-possibles)
@@ -141,6 +142,48 @@ Ce type de réseau permet à chacune des machines virtuelles d'accéder à inter
 | **`OpenCTI`**      | Gestion des renseignements sur les menaces   | OpenCTI centralise les renseignements sur les menaces pour une meilleure réponse aux incidents. (feeds externes, IoC).                                            | Centralisation et partage des renseignements sur les menaces. Ce qui améliore la connaissance des tactiques et techniques adverses pour adapter la défense. |
 | **`TheHive`**      | Gestion des incidents                        | Plateforme collaborative pour suivre et coordonner la gestion des incidents de sécurité.                                                                          | Permet la gestion et l’analyse des incidents avec traçabilité.                                                                                              |
 | **`Cortex`**       | Automatisation des analyses                  | Automatise les tâches d’enquête avec des analyses (hash, scans, etc.). Intégré avec TheHive.                                                                      | Automatisation des investigations pour accélérer la réponse aux incidents.                                                                                  |
+
+<br>
+
+## V - Structure du dépôt GitHub
+
+Afin de comprendre chaque partie et de permettre de rendre ce homelab évolutif, j'ai initié l'idée de créer différents scripts telle que :
+
+-   **`configure_vm.sh`** : _permet d'initier un premier paramettrage automatique lors de l'installation de la machine virtuelle._
+-   **`configure_locale_fr.sh`** : _permet de configurer le système avec la langue en française._
+-   **`full_system_update.sh`** : _permet d'anticiper un éventuel **snapshot** et donc il effectue une maintenance globale du système._
+-   **`install_oh_my_zsh`** : _permet d'utiliser un autre shell que **bash** et d'avoir un tout autre style (touche geek)._
+-   **`install_outils_x`** : _permet d'initialiser une installation spécifique ou **x** représente le nom d'un outil (`wazuh`, `snort`, `suricata`, etc.)._
+
+> **NOTE**<br>
+> La structure pour cette partie est toujours en réflexion mais l'idée étant de pouvoir simplifier l'organisation sans pour autant oublier le côté ludique du projet.
+
+L’arborescence se présente pour le moment ainsi :
+
+```
+R03-SOC/
+│
+├── README.md                       # Le fichier qui est actuellement lu
+├── .gitignore                      # Fichier permettant d'ignorer certains éléments permettant d'aléger le dépôt
+├── Vagrantfile                     # Fichier pour créer les machines virtuelles
+├── images/                         # Répertoire contenant toutes les illustrations proposées dans ce homelab
+│   ├── configuration_reseau.png
+│   ├── schema_homelab_détaillés.jpg
+│   ├── schema_homelab.png
+├── schema/                         # Répertoire contenant toutes les schemas réaliser au format mermaid
+│   ├── configuration_reseau.mmd
+│   ├── schema_homelab.png
+├── shared/                         # Répertoire communs à toutes les VMs
+│   ├── config/
+│   │   ├── configure_locale_fr.sh  # Permet de passer le système en Français
+│   │   ├── configure_vm.sh         # Permet de configuer la/(les) machine(s) virtuelle(s)
+│   ├── scripts/
+│   │   ├── install_oh_my_zsh.sh    # Permet d'installer ZSH puis OH MY ZSH
+│   │   ├── install_snort.sh        # Permet d'installer l'outil SNORT
+│   │   ├── install_suricata.sh     # Permet d'installer l'outil SURICATA
+│   │   ├── install_wazuh.sh        # Permet de télécharger l'assistant d'installation de WAZUH
+└── └── └── ...
+```
 
 <br>
 

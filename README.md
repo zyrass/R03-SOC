@@ -384,6 +384,26 @@ vagrant up
 vagrant up <nom_vm> # pour mon cas c'est vm1 || vm2 || vm3
 ```
 
+**Si une erreur**
+
+```bash
+# Stop toutes les VMs démarrer
+vagrant halt
+
+# Stop exclusivement qu'une VM
+vagrant halt <nom_vm>
+```
+
+**Supprimer les VMs**
+
+```bash
+# Supprimer toutes les VMs
+vagrant destroy -f
+
+# Supprimer qu'une VM
+vagrant destroy -f <name_vm>
+```
+
 ### D - Résultat d'un déploiement en une seule commande :
 
 ![vagrantfile_1](./images/vagrantfile/vagrantfile_1.png)

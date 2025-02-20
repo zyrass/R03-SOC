@@ -35,16 +35,16 @@ NODES = {
     hostname: 'r03-vm2-attaquant',
     ip_public: '10.0.2.20',
     ip_private: '192.168.56.20',
-    memory: 1024,
-    cpus: 1,
+    memory: 2048,
+    cpus: 2,
     scripts: []
   },
   'vm3' => {
     hostname: 'r03-vm3-cible',
     ip_public: '10.0.2.30',
     ip_private: '192.168.56.30',
-    memory: 1024,
-    cpus: 1,
+    memory: 2048,
+    cpus: 2,
     scripts: []
   }
 }
@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
     config.vm.define node_name do |node|
 
       # Configuration de base
-      node.vm.box = "bento/ubuntu-20.04"
+      node.vm.box = "bento/ubuntu-22.04"
       node.vm.hostname = node_config[:hostname]
 
       # Configuration du provider VirtualBox

@@ -9,33 +9,39 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
 - [HomeLab - Annexe 03 - Mise en Œuvre d’un SOC](#homelab---annexe-03---mise-en-œuvre-dun-soc)
   - [Sommaire](#sommaire)
   - [I - Introduction générale du projet](#i---introduction-générale-du-projet)
-  - [II - Problématique \& Objectifs](#ii---problématique--objectifs)
-    - [A - Problématique](#a---problématique)
-    - [B - Objectifs](#b---objectifs)
-  - [III - Prérequis techniques](#iii---prérequis-techniques)
-  - [IV - Tableau des Outils \& Concepts](#iv---tableau-des-outils--concepts)
-    - [A - C'est quoi un SOC/SIEM/EDR/SOAR ?](#a---cest-quoi-un-socsiemedrsoar-)
-    - [B - Outils utilisés dans mon SOC minimal](#b---outils-utilisés-dans-mon-soc-minimal)
-    - [C - Outils qui peuvent-être inclus pour un socle plus complet](#c---outils-qui-peuvent-être-inclus-pour-un-socle-plus-complet)
-  - [V - Structure du dépôt GitHub](#v---structure-du-dépôt-github)
-  - [VI - Idée simulé du projet](#vi---idée-simulé-du-projet)
-    - [A - L'idée](#a---lidée)
+  - [II - Problématique rencontré](#ii---problématique-rencontré)
+  - [III - Objectifs](#iii---objectifs)
+  - [IV - Prérequis techniques](#iv---prérequis-techniques)
+  - [V - Tableau des Outils \& Concepts](#v---tableau-des-outils--concepts)
+    - [A - Que signifie un SOC/SIEM/EDR/SOAR ?](#a---que-signifie-un-socsiemedrsoar-)
+    - [B - Quels sont les outils utilisés pour mon SOC minimal](#b---quels-sont-les-outils-utilisés-pour-mon-soc-minimal)
+    - [C - Quels sont les outils qui peuvent-être inclus pour un socle plus complet](#c---quels-sont-les-outils-qui-peuvent-être-inclus-pour-un-socle-plus-complet)
+  - [VI - Structure du dépôt GitHub (Ce Homelab)](#vi---structure-du-dépôt-github-ce-homelab)
+  - [VII - Énoncé simulé mais réaliste](#vii---énoncé-simulé-mais-réaliste)
+    - [A - Explications](#a---explications)
     - [B - Réalisation des schémas représentant l'idée du projet du soc minimale](#b---réalisation-des-schémas-représentant-lidée-du-projet-du-soc-minimale)
       - [1 - Schéma réalisé avec mermaid](#1---schéma-réalisé-avec-mermaid)
       - [2 - Schéma détaillé réalisé avec FigJam](#2---schéma-détaillé-réalisé-avec-figjam)
     - [C - Réalisation du schéma sur la configuration réseau utilisé](#c---réalisation-du-schéma-sur-la-configuration-réseau-utilisé)
-  - [VII - Déploiements des nombreux scripts déjà préparés en amont](#vii---déploiements-des-nombreux-scripts-déjà-préparés-en-amont)
-  - [VIII - Déploiements d'un script pour télécharger l'assistant d'installation de wazuh](#viii---déploiements-dun-script-pour-télécharger-lassistant-dinstallation-de-wazuh)
+  - [VIII - Déploiements des nombreux scripts déjà préparés en amont](#viii---déploiements-des-nombreux-scripts-déjà-préparés-en-amont)
+    - [A - Scripts utilisés lors de l'installation des VMs.](#a---scripts-utilisés-lors-de-linstallation-des-vms)
+    - [B - Scripts utilisés pour télécharger l'assistant d'installation de wazuh pour le SIEM uniquement](#b---scripts-utilisés-pour-télécharger-lassistant-dinstallation-de-wazuh-pour-le-siem-uniquement)
   - [IX - Création du Vagrantfile](#ix---création-du-vagrantfile)
     - [A - Création du fichier](#a---création-du-fichier)
     - [B - Vérification de la bonne conformité Vagrantfile](#b---vérification-de-la-bonne-conformité-vagrantfile)
     - [C - Déploiement des VMs](#c---déploiement-des-vms)
     - [D - Résultat d'un déploiement en une seule commande :](#d---résultat-dun-déploiement-en-une-seule-commande-)
-    - [E - Démarrage de la première VM (SIEM)](#e---démarrage-de-la-première-vm-siem)
-  - [X - Installation de Wazuh sur le SIEM (VM1)](#x---installation-de-wazuh-sur-le-siem-vm1)
-    - [Premier démarrage du dashboard](#premier-démarrage-du-dashboard)
-  - [XI - Ajout d'un Agent à partir du dashboard de Wazuh.](#xi---ajout-dun-agent-à-partir-du-dashboard-de-wazuh)
-  - [Perspective d'évolution possibles](#perspective-dévolution-possibles)
+    - [E - Démarrage de la première VM (_SIEM_)](#e---démarrage-de-la-première-vm-siem)
+  - [X - Installation de Wazuh sur le SIEM (_VM1_)](#x---installation-de-wazuh-sur-le-siem-vm1)
+  - [XI - Découverte du dashboard de Wazuh](#xi---découverte-du-dashboard-de-wazuh)
+    - [A - Premier démarrage du dashboard](#a---premier-démarrage-du-dashboard)
+    - [B - Ajout d'un Agent à partir du dashboard de Wazuh.](#b---ajout-dun-agent-à-partir-du-dashboard-de-wazuh)
+    - [C - Résultats obtenus](#c---résultats-obtenus)
+  - [XII - Détection des processus non autorisés (_officiel_)](#xii---détection-des-processus-non-autorisés-officiel)
+    - [A - Configuration d'un Agent (_wazuh-agent_) - (_machine sur linux_)](#a---configuration-dun-agent-wazuh-agent---machine-sur-linux)
+    - [B - Configuration du Server (_wazuh-server_) - (_machine sur linux SIEM_)](#b---configuration-du-server-wazuh-server---machine-sur-linux-siem)
+    - [C - Émulation d'attaque - (_Machine sur linux et plus précisément celle attaquante_)](#c---émulation-dattaque---machine-sur-linux-et-plus-précisément-celle-attaquante)
+    - [D - visualisation des alertes sur le dashboard de wazuh](#d---visualisation-des-alertes-sur-le-dashboard-de-wazuh)
   - [Conclusion](#conclusion)
 
 <br>
@@ -54,9 +60,7 @@ Dans le climat actuel où les **menaces informatiques** évoluent en continu, la
 
 <br>
 
-## II - Problématique & Objectifs
-
-### A - Problématique
+## II - Problématique rencontré
 
 Ma problématique se pose sur l'inconnu. J'ai eu un cours théorique très expéditif dans mon centre de formation qu'il m'était impossible sans recherche personnel de pouvoir mettre en pratique celui-ci. Mes différentes questions était ?
 
@@ -73,7 +77,7 @@ Tout en **optimisant la courbe d’apprentissage**, avec comme seules ressources
 -   une **recherche personnelle** approfondie
 -   une première expérience en virtualisation ce qui m'amène à utiliser et optimiser mon ordinateur personnel.
 
-### B - Objectifs
+## III - Objectifs
 
 -   **Objectif principal**  
     Simuler en concevant et en déployant **pas à pas** une infrastructure SOC, en utilisant uniquement des solutions/outils **open-source** reconnus et libres d’utilisation.
@@ -94,7 +98,7 @@ Ce projet me permet de répondre avant tout au besoin **technique** lié à l'`a
 
 <br>
 
-## III - Prérequis techniques
+## IV - Prérequis techniques
 
 1. **Connaissances préalables**
 
@@ -112,7 +116,7 @@ Ce projet me permet de répondre avant tout au besoin **technique** lié à l'`a
         - **Processeur** : `Intel(R) Core(TM) i5-10600KF CPU @ 4.10GHz`
 
 > **Note**<br>
-> L'image **Ubuntu 20.04** utilisées est une Image déployé par `Bento`. C'est une personne qui met à disposition de la communauté
+> L'image **Ubuntu 22.04** utilisées est une Image déployé par `Bento`. C'est une personne qui met à disposition de la communauté
 > différentes images relativement légères en mémoire. Malgré la version **dépassées**, elle me permet de ne pas consommer trop en ressource et de permettre d'être opérationnel plus rapidement. Enfin, je déploie un **script** lors de l'installation d'une quelconque VM pour passer le système en français.
 
 3. **Connectivité**
@@ -128,9 +132,9 @@ Ce type de réseau permet à chacune des machines virtuelles d'accéder à inter
 
 <br>
 
-## IV - Tableau des Outils & Concepts
+## V - Tableau des Outils & Concepts
 
-### A - C'est quoi un SOC/SIEM/EDR/SOAR ?
+### A - Que signifie un SOC/SIEM/EDR/SOAR ?
 
 | **Sigle**  | **Explication**                                    | **Description**                                                                                           | **Rôle**                                                                                             |
 | ---------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -139,28 +143,28 @@ Ce type de réseau permet à chacune des machines virtuelles d'accéder à inter
 | **`EDR`**  | _Endpoint Detection and Response_                  | Détection et réponse aux menaces spécifiques aux endpoints.                                               | Surveillance avancée des endpoints avec réponse automatisée aux menaces.                             |
 | **`SOAR`** | _Security Orchestration, Automation, and Response_ | Automatise la réponse aux incidents en orchestrant les actions entre différents outils.                   | Réduction du temps de réponse aux menaces par automatisation et coordination des outils de sécurité. |
 
-### B - Outils utilisés dans mon SOC minimal
+### B - Quels sont les outils utilisés pour mon SOC minimal
 
 | **Outil**          | **Catégorie**                                    | **Description**                                                                                                                                                                | **Rôle**                                                                                           | **Utilisé** |
 | ------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- | ----------- |
-| **`Wazuh`**        | Surveillance des endpoints                       | Collecte et corrèle les logs des hôtes, détecte les intrusions et surveille le système. Filebeat collecte les logs, Wazuh Indexer les stocke et Wazuh Dashboard les visualise. | Protection des endpoints, détection de comportements suspects, centralisation et analyse des logs. | ✅          |
+| **`Suricata`**     | Système de Détection d'Intrusion _(IDS/IPS)_     | Analyse le trafic réseau pour détecter des menaces via des règles et signatures.                                                                                               | Détection des menaces en analysant le trafic réseau.                                               | ✅          |
+| **`Wazuh`**        | Surveillance des endpoints _(SIEM)_              | Collecte et corrèle les logs des hôtes, détecte les intrusions et surveille le système. Filebeat collecte les logs, Wazuh Indexer les stocke et Wazuh Dashboard les visualise. | Protection des endpoints, détection de comportements suspects, centralisation et analyse des logs. | ✅          |
 | **`MITRE ATT&CK`** | Cadre des tactiques et techniques des attaquants | Base de données des techniques d’attaques, intégrée à Wazuh.                                                                                                                   | Référence pour comprendre et classifier les menaces détectées.                                     | ✅          |
 
-### C - Outils qui peuvent-être inclus pour un socle plus complet
+### C - Quels sont les outils qui peuvent-être inclus pour un socle plus complet
 
-| **Outil**          | **Catégorie**                                | **Description**                                                                                                                                                   | **Rôle**                                                                                                                                                    |
-| ------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`Snort`**        | Système de Prévention d'Intrusion _(IPS)_    | Snort surveille le trafic réseau et peut bloquer les activités malveillantes.<br>Similaire à Suricata, mais focalisé sur la prévention et le blocage automatique. | Prévention des menaces en bloquant les activités malveillantes en temps réel.                                                                               |
-| **`Suricata`**     | Système de Détection d'Intrusion _(IDS/IPS)_ | Analyse le trafic réseau pour détecter des menaces via des règles et signatures.                                                                                  | Détection des menaces en analysant le trafic réseau.                                                                                                        |
-| **`Zeek`**         | Surveillance du réseau                       | Zeek analyse les paquets réseau ( trafic ) pour détecter des comportements suspects.<br>( anomalies ou des activités malveillantes ).                             | Surveille en temps réel le réseau, génère des logs détaillés.                                                                                               |
-| **`Velociraptor`** | Investigation forensique                     | Velociraptor collecte et analyse des données forensiques sur les endpoints. Permet l’examen rapide d’artefacts système (fichiers, mémoire, événements).           | Investigation forensique pour comprendre les incidents de sécurité. Approfondit l’analyse post-incident et recueille des preuves tangibles.                 |
-| **`OpenCTI`**      | Gestion des renseignements sur les menaces   | OpenCTI centralise les renseignements sur les menaces pour une meilleure réponse aux incidents. (feeds externes, IoC).                                            | Centralisation et partage des renseignements sur les menaces. Ce qui améliore la connaissance des tactiques et techniques adverses pour adapter la défense. |
-| **`TheHive`**      | Gestion des incidents                        | Plateforme collaborative pour suivre et coordonner la gestion des incidents de sécurité.                                                                          | Permet la gestion et l’analyse des incidents avec traçabilité.                                                                                              |
-| **`Cortex`**       | Automatisation des analyses                  | Automatise les tâches d’enquête avec des analyses (hash, scans, etc.). Intégré avec TheHive.                                                                      | Automatisation des investigations pour accélérer la réponse aux incidents.                                                                                  |
+| **Outil**          | **Catégorie**                              | **Description**                                                                                                                                                   | **Rôle**                                                                                                                                                    |
+| ------------------ | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`Snort`**        | Système de Prévention d'Intrusion _(IPS)_  | Snort surveille le trafic réseau et peut bloquer les activités malveillantes.<br>Similaire à Suricata, mais focalisé sur la prévention et le blocage automatique. | Prévention des menaces en bloquant les activités malveillantes en temps réel.                                                                               |
+| **`Zeek`**         | Surveillance du réseau                     | Zeek analyse les paquets réseau ( trafic ) pour détecter des comportements suspects.<br>( anomalies ou des activités malveillantes ).                             | Surveille en temps réel le réseau, génère des logs détaillés.                                                                                               |
+| **`Velociraptor`** | Investigation forensique                   | Velociraptor collecte et analyse des données forensiques sur les endpoints. Permet l’examen rapide d’artefacts système (fichiers, mémoire, événements).           | Investigation forensique pour comprendre les incidents de sécurité. Approfondit l’analyse post-incident et recueille des preuves tangibles.                 |
+| **`OpenCTI`**      | Gestion des renseignements sur les menaces | OpenCTI centralise les renseignements sur les menaces pour une meilleure réponse aux incidents. (feeds externes, IoC).                                            | Centralisation et partage des renseignements sur les menaces. Ce qui améliore la connaissance des tactiques et techniques adverses pour adapter la défense. |
+| **`TheHive`**      | Gestion des incidents                      | Plateforme collaborative pour suivre et coordonner la gestion des incidents de sécurité.                                                                          | Permet la gestion et l’analyse des incidents avec traçabilité.                                                                                              |
+| **`Cortex`**       | Automatisation des analyses                | Automatise les tâches d’enquête avec des analyses (hash, scans, etc.). Intégré avec TheHive.                                                                      | Automatisation des investigations pour accélérer la réponse aux incidents.                                                                                  |
 
 <br>
 
-## V - Structure du dépôt GitHub
+## VI - Structure du dépôt GitHub (Ce Homelab)
 
 Afin de comprendre chaque partie et de permettre de rendre ce homelab évolutif, j'ai initié l'idée de créer différents scripts telle que :
 
@@ -174,6 +178,7 @@ Afin de comprendre chaque partie et de permettre de rendre ce homelab évolutif,
 > La structure pour cette partie est toujours en réflexion mais l'idée étant de pouvoir simplifier l'organisation sans pour autant oublier le côté ludique du projet.
 
 L’arborescence se présente pour le moment ainsi :
+_Je me donne le droit de la modifier à tout moment_
 
 ```
 R03-SOC/
@@ -200,22 +205,31 @@ R03-SOC/
 └── └── └── ...
 ```
 
-<br>
+## VII - Énoncé simulé mais réaliste
 
-## VI - Idée simulé du projet
+### A - Explications
 
-### A - L'idée
+La société X dispose d'un petit parc informatique constitué de 3 postes informatiques :
 
-Le projet ici consiste à créer tois (3) machines virtuelles avec comme sujet :
+-   `client n°1 windows 11` _Hôte du homelab afin de gagner en ressource_
+-   `client n°2 Ubuntu 22.04` _Attaquant_
+-   `Server Ubuntu 22.04` _cible_
 
--   Le mot d'ordre de l'entreprise est simple : **LE PING ENTRE LES MACHINES EST STRICTEMENT INTERDIT**
+Pour des raisons qui leurs appartienent, une désision forte à été prise pour éviter toute attaque.
+Il s'agit tout simplement <mark>**d'interdir toute tentative de ping vers les machines du réseau**</mark>.
 
-Ainsi, le but étant de générer des logs selon toute tentative de ping et permettre
-de les intercepter et de les afficher dans le dashboard de wazuh.
+Pour mener à bien ce projet, un **SOC** a été demandé pour répondre au besoin et de permettre de solutionner ce besoin.
+Ainsi, il a été décidé d'ouvrir `Un nouveau serveur qui contiendra un SIEM`.
+Le but recherché est simplement de collecter les logs qui auront été généré par un agent.
+Cet agent, devra envoyer au manager (_server-wazuh_ qui **n'existe pas**) les logs formatés.
 
-1. Une VM (**siem**) avec `wazuh-indexer`, `wazuh-server`, `wazuh-dashboard`.
-2. Une VM (**attaquante**) avec `wazuh-agent` qui aura été installé et qui **ne déclenchera aucun log**.
-3. Une VM (**cible**) avec également `wazuh-agent` qui aura été installé et qui déclenchera des logs qui seront envoyé à `wazuh-server`.
+> **ATTENTION**<br>
+> Si un **PING (_ICMP_)** est détecté une fois, alors une alerte est envoyé sur un channel appelé "alert-wazuh" sur un server discord privée.
+> Si cette même alerte est lancée plus de 5x alors une alerte de niveau 12 est alors déclenché et donc,
+> un email est envoyé vers un responsable qui traitera directement l'information (_smtp_gmail_).
+
+Le but étant de solutionner rapidement l'information tout en ayant une traçabilité pour prouver toute tentative malveillante
+de tel ou tel utilisateur.
 
 ### B - Réalisation des schémas représentant l'idée du projet du soc minimale
 
@@ -233,9 +247,11 @@ de les intercepter et de les afficher dans le dashboard de wazuh.
 
 <br>
 
-## VII - Déploiements des nombreux scripts déjà préparés en amont
+## VIII - Déploiements des nombreux scripts déjà préparés en amont
 
-Liste des fichiers qui ont été déployé dans le répertoire `shared/config/`
+### A - Scripts utilisés lors de l'installation des VMs.
+
+Liste des fichiers qui ont été déployé dans le répertoire `server/config/`
 
 -   **`configure_vm.sh`** : _Permet d'installer Postfix et d'éviter que l'installation ne plante._
 -   **`configure_locale_fr.sh`** : _Comme expliquer précédemment, ce script permet de passer le système en français._
@@ -243,9 +259,7 @@ Liste des fichiers qui ont été déployé dans le répertoire `shared/config/`
 Ces fichiers sont indispensable pour le Vagrantfile.
 Les autres scripts arriveront apès la rédaction du Vagrantfile.
 
-<br>
-
-## VIII - Déploiements d'un script pour télécharger l'assistant d'installation de wazuh
+### B - Scripts utilisés pour télécharger l'assistant d'installation de wazuh pour le SIEM uniquement
 
 Dans la première VM (**SIEM**), il est question dans le Vagrantfile d'avoir un script pour télécharger l'assistant de wazuh (**wazuh-install.sh**). Pour ça le script a été déployé dans le répertoire `shared/scripts/`
 
@@ -360,7 +374,7 @@ vagrant validate # Doit retourner -> "Vagrantfile validated successfully."
 
 ### C - Déploiement des VMs
 
-Le déploiement des VM se fait de deux façons :
+Le déploiement des VM se fait de deux façons (_mon choix se porte sur la première façon_) :
 
 ```bash
 # 1 - Déploiement en une seule fois
@@ -373,32 +387,27 @@ vagrant up <nom_vm> # pour mon cas c'est vm1 || vm2 || vm3
 ### D - Résultat d'un déploiement en une seule commande :
 
 ![vagrantfile_1](./images/vagrantfile/vagrantfile_1.png)
-
--   _figure : 3 VMs reconnus et installation de la première_
+_figure : 3 VMs reconnus et installation de la première_
 
 <br>
 
 ![vagrantfile_2](./images/vagrantfile/vagrantfile_2.png)
-
--   _figure : Installation de la langue française sur la VM1_
+_figure : Installation de la langue française sur la VM1_
 
 <br>
 
 ![vagrantfile_3](./images/vagrantfile/vagrantfile_3.png)
-
--   _figure : Enchaînement sur l'installation de Postfix_
+_figure : Enchaînement sur l'installation de Postfix_
 
 <br>
 
 ![vagrantfile_4](./images/vagrantfile/vagrantfile_4.png)
-
--   _figure : Fin d'installation de la VM1 et passage à l'installation de la VM2_
+_figure : Fin d'installation de la VM1 et passage à l'installation de la VM2_
 
 <br>
 
 ![vagrantfile_5](./images/vagrantfile/vagrantfile_5.png)
-
--   _figure : Fin d'installation de la VM2 et passage à l'installation de la VM3_
+_figure : Fin d'installation de la VM2 et passage à l'installation de la VM3_
 
 > **NOTE IMPORTANTE**<br>
 > Il faut remarquer ici que le script concernant le téléchargement de l'assistant d'installation de wazuh ne s'est pas déclenché à la fin de l'installation de Postfix sur la VM2.
@@ -406,30 +415,30 @@ vagrant up <nom_vm> # pour mon cas c'est vm1 || vm2 || vm3
 <br>
 
 ![vagrantfile_6](./images/vagrantfile/vagrantfile_6.png)
-
--   _figure : Fin d'installation de la VM3. **Aucune erreur !!**_
+_figure : Fin d'installation de la VM3. **Aucune erreur !!**_
 
 Les trois machines virtuelles sont prête et disponible dans Virtualbox. (`On ne lancera pas les VM de là.`).
 
 ![vagrantfile_7](./images/vagrantfile/vagrantfile_7.png)
 
-### E - Démarrage de la première VM (SIEM)
+### E - Démarrage de la première VM (_SIEM_)
 
-Le But ici est de lancer la première VM et de contrôler quelques étapes importante. Pour ce faire je lance la commande :
+Le But ici est de lancer la première VM et de contrôler quelques étapes importante.
+Pour ce faire je lance la commande :
 
 ```bash
 # Se connecter en ssh sur "vm1"
 vagrant ssh vm1
 ```
 
-**Les étapes à contrôler** :
+**Les étapes à contrôler** (_Si cocher c'est que c'est validé_) :
 
 -   [x] Mettre à jour tout les paquets
 -   [x] Mettre à niveau tout les paquets (upgrade)
 -   [x] Supprimer tout les programmes vide
 
     ```bash
-    # Tout en un
+    # Ces trois vérifications peuvent se faire en une commande
     sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y
     ```
 
@@ -456,23 +465,40 @@ vagrant ssh vm1
 
 <br>
 
-## X - Installation de Wazuh sur le SIEM (VM1)
+## X - Installation de Wazuh sur le SIEM (_VM1_)
 
-Rien de plus simple, les contrôles précédends ayant été réussi, il suffit d'exécuter le script d'instalation et d'attendre que tout est bien installé.
+Rien de plus simple, les contrôles précédends ayant été réussi avec succès,<br>
+il suffit d'exécuter le script d'instalation et d'attendre que tout est bien installé.
 
 > **NOTE IMPORTANTE**<br>
-> L'installation prends un peu de temps et parfois on a l'impression que celle-ci a planté. Mais il n'en ai rien et il faut prendre son mal en patience.
+> L'installation prendra un peu de temps et parfois on a l'impression que celle-ci a planté.<br>
+> Mais dans les faits, il n'en ai rien et il faut prendre son mal en patience.
 
 ```bash
 # Toujours au même endroit sans s'être déplacer dans un dossier, on exécute le script d'installation de l'assistant avec la commande :
 sudo bash wazuh-install.sh -a
 ```
 
-> **NOTE IMPORTANTE**<br> _**L'identifiant et le mot de passe de connexion au dashboard de Wazuh sera communiquer à la fin de l'installation.**_
+> **NOTE IMPORTANTE**<br> > _**L'identifiant et le mot de passe de connexion au dashboard de Wazuh sera communiquer à la fin de l'installation.**_<br> > **Il faut penser à l'inclure dans le `.env` situé à la racine du projet.**
+
+**Fichier .env** :
+
+```perl
+# Identifiant pour le Wazuh Dashboard
+WAZUH_DASBOARD_USER=""
+WAZUH_DASBOARD_PASSWORD=""
+```
 
 ![wazuh-install](./images/wazuh/wazuh-install.png)
 
-> **NOUVELLE NOTE**<br> _Comme je l'ai évoqué, l'installation de cette partie est très longue. J'enticipe donc pour ouvrir deux autres terminaux et je me connecte sur la **VM2** et sur la **VM3** en ssh avec la commande `vagrant ssh <vm2 || vm3>`._ > \_Ensuite je lance la mise à jour du système pour gagner du temps avec la commande : `sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y`
+> **NOUVELLE NOTE**<br> _Comme je l'ai évoqué, l'installation de cette partie est très longue._<br> > _J'enticipe donc pour ouvrir deux autres terminaux et je me connecte sur la **VM2** et sur la **VM3**_<br> > _en ssh avec la commande `vagrant ssh <vm2 || vm3>`._<br> > _Ensuite je lance la mise à jour du système pour gagner du temps avec la commande :_
+
+```bash
+# Mise à jour complète des paquets et dépendances déjà présent sur le système.
+sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y
+```
+
+**Retour sur la VM1 (SIEM)**
 
 ```bash
 # Il est impératif d'éviter une monté de version ce qui aurait pour effet de casser la connexion entre les services.
@@ -480,7 +506,9 @@ sudo sed -i "s/^deb /#deb /" /etc/apt/sources.list.d/wazuh.list
 sudo apt update
 ```
 
-### Premier démarrage du dashboard
+## XI - Découverte du dashboard de Wazuh
+
+### A - Premier démarrage du dashboard
 
 Il faut se rendre dans son navigateur et saisir l'url suivante : [https://192.168.56.10](https://192.168.56.10)
 
@@ -492,12 +520,13 @@ Il faut se rendre dans son navigateur et saisir l'url suivante : [https://192.16
 
 <br>
 
-## XI - Ajout d'un Agent à partir du dashboard de Wazuh.
+### B - Ajout d'un Agent à partir du dashboard de Wazuh.
 
 ![Wazuh-Agent VM2 - 1](./images/wazuh/wazuh-agent-add-1.png)
 ![Wazuh-Agent VM2 - 2](./images/wazuh/wazuh-agent-add-2.png)
 
-Dans la 3ème et dernière capture pour la configuration de l'agent, il me suffit de remplire ce qui est demandé. On a juste à cliquer dessus et coller la commande qui ma a été fourni dans le teminal de la VM2.
+Dans la 3ème et dernière capture pour la configuration de l'agent, il me suffit de remplire ce qui est demandé.<br>
+On a juste à cliquer dessus et coller la commande qui ma a été fourni dans le teminal de la VM2.
 
 ![Wazuh-Agent VM2 - 3](./images/wazuh/wazuh-agent-add-3.png)
 
@@ -511,7 +540,7 @@ sudo systemctl enable wazuh-agent
 sudo systemctl start wazuh-agent
 ```
 
-**Résultats obtenus**
+### C - Résultats obtenus
 
 ![Wazuh-Agent VM2 - 4](./images/wazuh/wazuh-agent-add-4.png)
 
@@ -522,12 +551,82 @@ sudo systemctl start wazuh-agent
 
 <br>
 
-## Perspective d'évolution possibles
+## XII - Détection des processus non autorisés (_officiel_)
+
+[Source officiel]("https://documentation.wazuh.com/current/proof-of-concept-guide/detect-unauthorized-processes-netcat.html#detecting-unauthorized-processes")
+
+### A - Configuration d'un Agent (_wazuh-agent_) - (_machine sur linux_)
+
+1. Il me faut ajouter le bloc de configuration qui suit dans le fichier : `/var/ossec/etc/ossec.conf`.<br>
+   Cela permet d'obtenir périodiquement une liste des processus en cours d'exécution
+
+    ```xml
+    <ossec_config>
+      <localfile>
+        <log_format>full_command</log_format>
+        <alias>process list</alias>
+        <command>ps -e -o pid,uname,command</command>
+        <frequency>30</frequency>
+      </localfile>
+    </ossec_config>
+    ```
+
+2. Je dois redémarrez l'agent Wazuh pour appliquer les modifications
+
+```bash
+# Redémarre l'agent wazuh
+sudo systemctl restart wazuh-agent
+```
+
+3. Installation de `Netcat` et `nmap`
+
+```bash
+sudo apt install ncat nmap -y
+```
+
+### B - Configuration du Server (_wazuh-server_) - (_machine sur linux SIEM_)
+
+1. Ajout des règles nécessaires dans le fichier `/var/ossec/etc/rules/local_rules.xml`
+
+```xml
+<group name="ossec,">
+  <rule id="100050" level="0">
+    <if_sid>530</if_sid>
+    <match>^ossec: output: 'process list'</match>
+    <description>Liste des processus démarrées.</description>
+    <group>process_monitor,</group>
+  </rule>
+
+  <rule id="100051" level="7" ignore="900">
+    <if_sid>100050</if_sid>
+    <match>nc -l</match>
+    <description>[ALERTE] - Le programme "netcat" écoute les connexions entrantes.</description>
+    <group>process_monitor</group>
+  </rule>
+</group>
+```
+
+2. Je redémarre le gestionnaire Wazuh pour appliquer les modifications
+
+```bash
+# Je redémarre le service wazuh-manager qui correspond à wazuh-server
+sudo systemctl restart wazuh-manager
+```
+
+### C - Émulation d'attaque - (_Machine sur linux et plus précisément celle attaquante_)
+
+Sur la machine virtuelle attaquante, il s'agit de lancer pendant 30 secondes la commande ci-dessous.
+
+```bash
+#
+nc -l 8000
+```
+
+### D - visualisation des alertes sur le dashboard de wazuh
+
+Je peux visualiser les données d'alerte dans le tableau de bord Wazuh (_dashboard_).
+Pour ça je me rends dans le module `Threat Hunting` et j'ajoute un filtre (`rule.id:(100051)`) dans la barre de recherche.
 
 <br>
 
 ## Conclusion
-
-```
-
-```

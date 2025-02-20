@@ -12,3 +12,6 @@
 
 # Ignorer les fichiers temporaires
 *.tmp
+
+# Ignorer le fichier contenant les variables d'environnements.
+.env

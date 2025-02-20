@@ -32,7 +32,8 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
     - [C - Déploiement des VMs](#c---déploiement-des-vms)
     - [D - Résultat d'un déploiement en une seule commande :](#d---résultat-dun-déploiement-en-une-seule-commande-)
     - [E - Démarrage de la première VM (SIEM)](#e---démarrage-de-la-première-vm-siem)
-  - [Introductions de mise en route](#introductions-de-mise-en-route)
+  - [X - Installation de Wazuh sur le SIEM (VM1)](#x---installation-de-wazuh-sur-le-siem-vm1)
+    - [Premier démarrage du dashboard](#premier-démarrage-du-dashboard)
   - [Ordre de déploiement et pourquoi](#ordre-de-déploiement-et-pourquoi)
   - [Perspective d'évolution possibles](#perspective-dévolution-possibles)
   - [Conclusion](#conclusion)
@@ -279,10 +280,14 @@ end
 # dans le choix de l'interface réseau
 BRIDGE_INTERFACE = get_first_bridge_interface()
 
+# Définition du mode réseau (privé recommandé)
+NETWORK_MODE = "private_network" # Peut être "public_network" si nécessaire
+
 # Configuration des VMs
 NODES = {
   'vm1' => {
     hostname: 'r03-vm1-siem',
+    ip_public: '10.0.2.10',
     ip_private: '192.168.56.10',
     memory: 8192,
     cpus: 4,
@@ -290,6 +295,7 @@ NODES = {
   },
   'vm2' => {
     hostname: 'r03-vm2-attaquant',
+    ip_public: '10.0.2.20',
     ip_private: '192.168.56.20',
     memory: 1024,
     cpus: 1,
@@ -297,6 +303,7 @@ NODES = {
   },
   'vm3' => {
     hostname: 'r03-vm3-cible',
+    ip_public: '10.0.2.30',
     ip_private: '192.168.56.30',
     memory: 1024,
     cpus: 1,
@@ -320,8 +327,12 @@ Vagrant.configure("2") do |config|
         vb.cpus = node_config[:cpus]
       end
 
-      # Configuration réseau
-      node.vm.network "private_network", ip: node_config[:ip_private], auto_config: true, bridge: BRIDGE_INTERFACE
+      # Configuration réseau (privé recommandé)
+      if NETWORK_MODE == "public_network"
+        node.vm.network "public_network", ip: node_config[:ip_public], auto_config: true, bridge: BRIDGE_INTERFACE
+      else
+        node.vm.network "private_network", ip: node_config[:ip_private], auto_config: true, bridge: BRIDGE_INTERFACE
+      end
 
       # Dossier partagé
       node.vm.synced_folder "shared", "/home/vagrant/shared"
@@ -413,6 +424,15 @@ vagrant ssh vm1
 
 **Les étapes à contrôler** :
 
+-   [x] Mettre à jour tout les paquets
+-   [x] Mettre à niveau tout les paquets (upgrade)
+-   [x] Supprimer tout les programmes vide
+
+    ```bash
+    # Tout en un
+    sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y
+    ```
+
 -   [x] Contrôler la présence du script **`wazuh-install.sh`**
     ```bash
     # Affiche la liste des fichiers
@@ -436,7 +456,39 @@ vagrant ssh vm1
 
 <br>
 
-## Introductions de mise en route
+## X - Installation de Wazuh sur le SIEM (VM1)
+
+Rien de plus simple, les contrôles précédends ayant été réussi, il suffit d'exécuter le script d'instalation et d'attendre que tout est bien installé.
+
+> **NOTE IMPORTANTE**<br>
+> L'installation prends un peu de temps et parfois on a l'impression que celle-ci a planté. Mais il n'en ai rien et il faut prendre son mal en patience.
+
+```bash
+# Toujours au même endroit sans s'être déplacer dans un dossier, on exécute le script d'installation de l'assistant avec la commande :
+sudo bash wazuh-install.sh -a
+```
+
+> **NOTE IMPORTANTE**<br> _**L'identifiant et le mot de passe de connexion au dashboard de Wazuh sera communiquer à la fin de l'installation.**_
+
+![wazuh-install](./images/wazuh/wazuh-install.png)
+
+> **NOUVELLE NOTE**<br> _Comme je l'ai évoqué, l'installation de cette partie est très longue. J'enticipe donc pour ouvrir deux autres terminaux et je me connecte sur la **VM2** et sur la **VM3** en ssh avec la commande `vagrant ssh <vm2 || vm3>`._ > \_Ensuite je lance la mise à jour du système pour gagner du temps avec la commande : `sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y`
+
+```bash
+# Il est impératif d'éviter une monté de version ce qui aurait pour effet de casser la connexion entre les services.
+sudo sed -i "s/^deb /#deb /" /etc/apt/sources.list.d/wazuh.list
+sudo apt update
+```
+
+### Premier démarrage du dashboard
+
+Il faut se rendre dans son navigateur et saisir l'url suivante : [https://192.168.56.10](https://192.168.56.10)
+
+<br>
+
+![premiere_connexion](./images/wazuh/wazuh-connexion.png)
+
+![dashboard](./images/wazuh/wazuh-dashboard.png)
 
 <br>
 

@@ -34,7 +34,7 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
     - [E - Démarrage de la première VM (SIEM)](#e---démarrage-de-la-première-vm-siem)
   - [X - Installation de Wazuh sur le SIEM (VM1)](#x---installation-de-wazuh-sur-le-siem-vm1)
     - [Premier démarrage du dashboard](#premier-démarrage-du-dashboard)
-  - [Ordre de déploiement et pourquoi](#ordre-de-déploiement-et-pourquoi)
+  - [XI - Ajout d'un Agent à partir du dashboard de Wazuh.](#xi---ajout-dun-agent-à-partir-du-dashboard-de-wazuh)
   - [Perspective d'évolution possibles](#perspective-dévolution-possibles)
   - [Conclusion](#conclusion)
 
@@ -492,7 +492,33 @@ Il faut se rendre dans son navigateur et saisir l'url suivante : [https://192.16
 
 <br>
 
-## Ordre de déploiement et pourquoi
+## XI - Ajout d'un Agent à partir du dashboard de Wazuh.
+
+![Wazuh-Agent VM2 - 1](./images/wazuh/wazuh-agent-add-1.png)
+![Wazuh-Agent VM2 - 2](./images/wazuh/wazuh-agent-add-2.png)
+
+Dans la 3ème et dernière capture pour la configuration de l'agent, il me suffit de remplire ce qui est demandé. On a juste à cliquer dessus et coller la commande qui ma a été fourni dans le teminal de la VM2.
+
+![Wazuh-Agent VM2 - 3](./images/wazuh/wazuh-agent-add-3.png)
+
+```bash
+# La commande que j'avais à coller :
+wget https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.10.1-1_amd64.deb && sudo WAZUH_MANAGER='192.168.56.10' WAZUH_AGENT_NAME='VM2-Attaquant' dpkg -i ./wazuh-agent_4.10.1-1_amd64.deb
+
+# suivi de quelques commande l'activer au démarrage et le démarrer.
+sudo systemctl daemon-reload
+sudo systemctl enable wazuh-agent
+sudo systemctl start wazuh-agent
+```
+
+**Résultats obtenus**
+
+![Wazuh-Agent VM2 - 4](./images/wazuh/wazuh-agent-add-4.png)
+
+> **NOTE**<br>
+> En OFF, je vais répété la même opération pour la machine cible.
+
+![Wazuh-Agent VM3 - 5](./images/wazuh/wazuh-agent-add-5.png)
 
 <br>
 

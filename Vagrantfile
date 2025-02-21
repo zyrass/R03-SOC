@@ -76,8 +76,8 @@ Vagrant.configure("2") do |config|
       node.vm.synced_folder "shared", "/home/vagrant/shared"
 
       # Scripts de provisioning communs
-      node.vm.provision "shell", path: "shared/config/configure_locale_fr.sh"
-      node.vm.provision "shell", path: "shared/config/configure_vm.sh"
+      node.vm.provision "shell", path: "server/config/configure_locale_fr.sh"
+      node.vm.provision "shell", path: "server/config/configure_vm.sh"
 
       # Scripts spécifiques pour installer ou télécharger des outils
       node_config[:scripts].each do |script|

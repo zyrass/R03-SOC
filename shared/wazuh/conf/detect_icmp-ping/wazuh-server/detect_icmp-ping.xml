@@ -1,0 +1,34 @@
+<!--
+  # Fichier : /var/ossec/etc/rules/local_rules.xml (WAZUH-SERVER)
+  # Ce bloc définit les règles de détection pour les pings ICMP détectés par les agents.
+-->
+
+<group name="ossec,icmp">
+  
+  <!-- Détection simple d'un ping ICMP -->
+  <rule id="100100" level="6">
+    <if_sid>530</if_sid> <!-- Se base sur les logs du Wazuh-Agent -->
+    <match>ICMP echo request</match> <!-- Correspondance avec un ping -->
+    <description>Ping ICMP détecté : $srcip → $dstip</description>
+    <group>network,icmp</group>
+    <options>alert_by_webhook</options> <!-- Envoi vers un webhook Discord -->
+  </rule>
+
+  <!-- Détection d'un ping répété 5 fois ou plus en 30s -->
+  <rule id="100101" level="12">
+    <if_sid>100100</if_sid> <!-- Déclenché par la première règle -->
+    <frequency>5</frequency> <!-- Si répété 5 fois en 30 secondes -->
+    <description>⚠️ Scan ICMP détecté : $srcip → $dstip (5 pings ou plus)</description>
+    <group>network,icmp</group>
+    <options>alert_by_email</options> <!-- Envoi d’un email -->
+  </rule>
+
+</group>
+
+<!--
+  # Redémarrez le manager Wazuh pour appliquer les modifications :
+  sudo systemctl restart wazuh-manager
+
+  # Visualisation des données d'alerte dans le dashboard. (Module Threat Hunting)
+  # Filtre : rule.id:(100100) ||/&& rule.id:(100101)
+-->

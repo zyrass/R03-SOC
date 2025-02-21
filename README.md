@@ -37,11 +37,23 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
     - [A - Premier démarrage du dashboard](#a---premier-démarrage-du-dashboard)
     - [B - Ajout d'un Agent à partir du dashboard de Wazuh.](#b---ajout-dun-agent-à-partir-du-dashboard-de-wazuh)
     - [C - Résultats obtenus](#c---résultats-obtenus)
-  - [XII - Détection des processus non autorisés (_officiel_)](#xii---détection-des-processus-non-autorisés-officiel)
-    - [A - Configuration d'un Agent (_wazuh-agent_) - (_machine sur linux_)](#a---configuration-dun-agent-wazuh-agent---machine-sur-linux)
-    - [B - Configuration du Server (_wazuh-server_) - (_machine sur linux SIEM_)](#b---configuration-du-server-wazuh-server---machine-sur-linux-siem)
-    - [C - Émulation d'attaque - (_Machine sur linux et plus précisément celle attaquante_)](#c---émulation-dattaque---machine-sur-linux-et-plus-précisément-celle-attaquante)
-    - [D - visualisation des alertes sur le dashboard de wazuh](#d---visualisation-des-alertes-sur-le-dashboard-de-wazuh)
+  - [XII - Exemple de règle officiel pour établir quelques tests](#xii---exemple-de-règle-officiel-pour-établir-quelques-tests)
+    - [A - Détection des processus non autorisés (_officiel_)](#a---détection-des-processus-non-autorisés-officiel)
+      - [1 - Configuration d'un Agent (_wazuh-agent_) - (_machine sur linux_)](#1---configuration-dun-agent-wazuh-agent---machine-sur-linux)
+      - [2 - Configuration du Server (_wazuh-server_) - (_machine sur linux SIEM_)](#2---configuration-du-server-wazuh-server---machine-sur-linux-siem)
+      - [3 - Émulation d'attaque - (_Machine sur linux et plus précisément celle attaquante_)](#3---émulation-dattaque---machine-sur-linux-et-plus-précisément-celle-attaquante)
+      - [4 - visualisation des alertes sur le dashboard de wazuh](#4---visualisation-des-alertes-sur-le-dashboard-de-wazuh)
+  - [XIII - Mise en place de la solution pour répondre au projet](#xiii---mise-en-place-de-la-solution-pour-répondre-au-projet)
+    - [A - Section WAZUH-AGENT (Configuration)](#a---section-wazuh-agent-configuration)
+      - [bonus - Vérification de l'existance de l'outil "tcpdump" sur le système](#bonus---vérification-de-lexistance-de-loutil-tcpdump-sur-le-système)
+    - [B - Section WAZUH-SERVER (Détection et Règles)](#b---section-wazuh-server-détection-et-règles)
+      - [1 - Création de la règle (rule)](#1---création-de-la-règle-rule)
+      - [2 - Configuration du Webhook Discord (gravité de niveau 6)](#2---configuration-du-webhook-discord-gravité-de-niveau-6)
+      - [3 - Configuration de l'envoie d'un Email (gravité de niveau 12)](#3---configuration-de-lenvoie-dun-email-gravité-de-niveau-12)
+    - [C - Emulation de l'attaque](#c---emulation-de-lattaque)
+      - [1 - Déclenchement du webhook discord](#1---déclenchement-du-webhook-discord)
+      - [2 - Visualisation des données d'alerte dans le dashboard.](#2---visualisation-des-données-dalerte-dans-le-dashboard)
+  - [XIV - Perspectives et évolutions possibles](#xiv---perspectives-et-évolutions-possibles)
   - [Conclusion](#conclusion)
 
 <br>
@@ -311,16 +323,16 @@ NODES = {
     hostname: 'r03-vm2-attaquant',
     ip_public: '10.0.2.20',
     ip_private: '192.168.56.20',
-    memory: 1024,
-    cpus: 1,
+    memory: 2048,
+    cpus: 2,
     scripts: []
   },
   'vm3' => {
     hostname: 'r03-vm3-cible',
     ip_public: '10.0.2.30',
     ip_private: '192.168.56.30',
-    memory: 1024,
-    cpus: 1,
+    memory: 2048,
+    cpus: 2,
     scripts: []
   }
 }
@@ -331,7 +343,7 @@ Vagrant.configure("2") do |config|
     config.vm.define node_name do |node|
 
       # Configuration de base
-      node.vm.box = "bento/ubuntu-20.04"
+      node.vm.box = "bento/ubuntu-22.04"
       node.vm.hostname = node_config[:hostname]
 
       # Configuration du provider VirtualBox
@@ -352,8 +364,8 @@ Vagrant.configure("2") do |config|
       node.vm.synced_folder "shared", "/home/vagrant/shared"
 
       # Scripts de provisioning communs
-      node.vm.provision "shell", path: "shared/config/configure_locale_fr.sh"
-      node.vm.provision "shell", path: "shared/config/configure_vm.sh"
+      node.vm.provision "shell", path: "server/config/configure_locale_fr.sh"
+      node.vm.provision "shell", path: "server/config/configure_vm.sh"
 
       # Scripts spécifiques pour installer ou télécharger des outils
       node_config[:scripts].each do |script|
@@ -571,11 +583,13 @@ sudo systemctl start wazuh-agent
 
 <br>
 
-## XII - Détection des processus non autorisés (_officiel_)
+## XII - Exemple de règle officiel pour établir quelques tests
+
+### A - Détection des processus non autorisés (_officiel_)
 
 [Source officiel]("https://documentation.wazuh.com/current/proof-of-concept-guide/detect-unauthorized-processes-netcat.html#detecting-unauthorized-processes")
 
-### A - Configuration d'un Agent (_wazuh-agent_) - (_machine sur linux_)
+#### 1 - Configuration d'un Agent (_wazuh-agent_) - (_machine sur linux_)
 
 1. Il me faut ajouter le bloc de configuration qui suit dans le fichier : `/var/ossec/etc/ossec.conf`.<br>
    Cela permet d'obtenir périodiquement une liste des processus en cours d'exécution
@@ -604,7 +618,7 @@ sudo systemctl restart wazuh-agent
 sudo apt install ncat nmap -y
 ```
 
-### B - Configuration du Server (_wazuh-server_) - (_machine sur linux SIEM_)
+#### 2 - Configuration du Server (_wazuh-server_) - (_machine sur linux SIEM_)
 
 1. Ajout des règles nécessaires dans le fichier `/var/ossec/etc/rules/local_rules.xml`
 
@@ -633,7 +647,7 @@ sudo apt install ncat nmap -y
 sudo systemctl restart wazuh-manager
 ```
 
-### C - Émulation d'attaque - (_Machine sur linux et plus précisément celle attaquante_)
+#### 3 - Émulation d'attaque - (_Machine sur linux et plus précisément celle attaquante_)
 
 Sur la machine virtuelle attaquante, il s'agit de lancer pendant 30 secondes la commande ci-dessous.
 
@@ -642,11 +656,201 @@ Sur la machine virtuelle attaquante, il s'agit de lancer pendant 30 secondes la 
 nc -l 8000
 ```
 
-### D - visualisation des alertes sur le dashboard de wazuh
+#### 4 - visualisation des alertes sur le dashboard de wazuh
 
 Je peux visualiser les données d'alerte dans le tableau de bord Wazuh (_dashboard_).
 Pour ça je me rends dans le module `Threat Hunting` et j'ajoute un filtre (`rule.id:(100051)`) dans la barre de recherche.
 
 <br>
 
+## XIII - Mise en place de la solution pour répondre au projet
+
+### A - Section WAZUH-AGENT (Configuration)
+
+Ajout d'une règle pour détecter le ping toute les 30 sec.
+Il faut que j'**inclus** le code ci-dessous le fichier "**ossec.conf**" situé dans `/var/ossec/etc` (_**WAZUH-AGENT**_)
+Ce bloc permet de surveiller les requêtes ICMP (ping) envoyées vers cette machine.
+
+```xml
+<ossec_config>
+  <localfile>
+    <log_format>full_command</log_format> <!-- Analyse de sortie d'une commande -->
+    <alias>Surveillance des pings ICMP</alias> <!-- Nom de la règle -->
+    <command>sudo tcpdump -l -n icmp</command> <!-- Capture du trafic ICMP -->
+    <frequency>30</frequency> <!-- Exécution toutes les 30 secondes -->
+  </localfile>
+</ossec_config>
+```
+
+**Explication**
+
+-   `tcpdump -l -n icmp` : Capture du trafic ICMP (ping).
+-   Fréquence de 30 secondes : Vérification régulière du trafic.
+-   Ce fichier est sur l’agent car c'est la machine qui surveille les attaques.
+
+#### bonus - Vérification de l'existance de l'outil "tcpdump" sur le système
+
+```bash
+# Vérification de l'existance de l'outil "tcpdump" sur le système
+tcpdump --version
+
+# Retour de la commande ci-dessus
+tcpdump version 4.99.1
+libpcap version 1.10.1 (with TPACKET_V3)
+OpenSSL 3.0.2 15 Mar 2022
+
+# --------------------------------------------------------------------------------------------------------------
+# SI "tcpdump" N'EST PAS INSTALLE
+# --------------------------------------------------------------------------------------------------------------
+sudo apt update && sudo apt install tcpdump -y
+```
+
+Une fois l'agent déployé, il me faut redémarrer le service Wazuh-agent pour appliquer les modifications.
+
+```bash
+# Redémarrage de wazuh-agent
+sudo systemctl restart wazuh-agent
+```
+
+> **NOTE IMPORTANTE**<br>
+> Cette étape doit être répété sur chaque système qui détient un wazuh-agent.
+
+### B - Section WAZUH-SERVER (Détection et Règles)
+
+Le server (_Wazuh-Server_) doit **analyser les logs de l'agent** et appliquer les **règles de détection**.
+Notre règle étant personnalisé, elle n'exite pas.
+
+#### 1 - Création de la règle (rule)
+
+Il faut la créé en ajoutant le code ci-dessous dans le fichier **local_rules.xml** situé : `/var/ossec/etc/rules/`.
+Ce bloc définit les règles de détection pour les pings ICMP détectés par les agents.
+En fonction de la gravité de l'incident, un webhook est déclenché ou bien un email est envoyé.
+
+```xml
+<group name="ossec,icmp">
+
+  <!-- Détection simple d'un ping ICMP avec déclenchement d'un webhook discord -->
+  <rule id="100100" level="6">
+    <if_sid>530</if_sid> <!-- Se base sur les logs du Wazuh-Agent -->
+    <match>ICMP echo request</match> <!-- Correspondance avec un ping -->
+    <description>Ping ICMP détecté : $srcip → $dstip</description>
+    <group>network,icmp</group>
+    <options>alert_by_webhook</options> <!-- Envoi vers un webhook Discord -->
+  </rule>
+
+  <!-- Détection d'un ping répété 5 fois ou plus en 30s, déclenchement de l'envoie d'un email -->
+  <rule id="100101" level="12">
+    <if_sid>100100</if_sid> <!-- Déclenché par la première règle -->
+    <frequency>5</frequency> <!-- Si répété 5 fois en 30 secondes -->
+    <description>⚠️ Scan ICMP détecté : $srcip → $dstip (5 pings ou plus)</description>
+    <group>network,icmp</group>
+    <options>alert_by_email</options> <!-- Envoi d’un email -->
+  </rule>
+
+</group>
+```
+
+**Explication**
+
+-   **Règle 100100 (_Niveau 6_)** : Un simple ping est détecté → **Webhook Discord déclenché**.
+-   **Règle 100101 (_Niveau 12_)** : Si un ping est détecté 5 fois en 30 secondes, **un email est envoyé**.
+-   `$srcip → $dstip` : Indique l’IP de l’attaquant (la source) et la cible (la destination).
+
+#### 2 - Configuration du Webhook Discord (gravité de niveau 6)
+
+Le webhook n'existe pas, il me faut le configurer en ajoutant le code ci-dessous dans le fichier **ossec.conf** situé : `/var/ossec/etc/ossec/`.
+Ce bloc permet de configurer le webhook discord. **CETTE PARTIE SERA INDIQUER PARTIELLEMENT POUR EVITER TOUTE FUITE DE DONNEE**
+Une fois un ping détecté, la gravité établit au niveau 6 déclenchera le webhook sur un discord spécifique.
+
+```xml
+<ossec_config>
+  <integration>
+    <name>ping-webhook-discord</name>
+    <hook_url>https://discord.com/api/webhooks/xxxxx/yyyyy</hook_url> <!-- URL du webhook -->
+    <level>6</level> <!-- Déclenchement pour les alertes niveau 6 -->
+  </integration>
+</ossec_config>
+```
+
+**Explication**
+
+-   **Niveau 6** : Se déclenche sur un ping unique détecté.
+-   **Webhook Discord** : Permet une notification rapide en cas de tentative de scan ICMP.
+
+> En effet, dans la demande initiale, l'entreprise doit être alerté immédiatement de tout incident afin de savoir qui pourrait potentiellement chercher à les nuirs. L'alerte sur discord permet immédiatement de prendre connaissance de la problématique rencontré.
+
+#### 3 - Configuration de l'envoie d'un Email (gravité de niveau 12)
+
+La partie email existe déjà.
+Dans le code ci-dessous; elle doit être adapté au contexte de l'entreprise.
+
+> _**Définit généralement dans la PSSI**, si elle existe, auquel cas il s'agira d'inclure le mail de la personne mendaté pour résoudre le problème majeur qui aura été déclenché._
+
+Pour celà, la modification se fera toujours dans le fichier **ossec.conf** situé : `/var/ossec/etc/ossec/`.
+Ce bloc permet de configurer l'envoie d'un email. **CETTE PARTIE SERA EGALEMENT INDIQUER PARTIELLEMENT POUR EVITER TOUTE FUITE DE DONNEE**.
+Ici, une fois un ping détecté **et répété cinq fois (5x) au minimum**, un envoie d'un email à un responsable est automatiquement déclenché. La gravité est établit au niveau 12.
+
+```xml
+<ossec_config>
+  <global>
+    <email_notification>yes</email_notification>
+    <email_to>responsable-assab@gmail.com</email_to> <!-- Adresse du destinataire -->
+    <smtp_server>smtp.example.com</smtp_server> <!-- Adresse du serveur SMTP -->
+    <email_from>wazuh-alert@example.com</email_from> <!-- Adresse d’envoi -->
+  </global>
+</ossec_config>
+```
+
+**Explication**
+
+-   **Niveau 12** : Envoi d’un email sur un serveur SMTP si 5 pings en 30s sont détectés.
+-   **Serveur SMTP requis** : Remplace smtp.example.com par le serveur SMTP utilisé.
+
+Une fois les règles et les configurations déployé, il me faut redémarrer le service Wazuh-manager pour appliquer les modifications.
+
+```bash
+# Redémarrage de wazuh-agent
+sudo systemctl restart wazuh-manager
+```
+
+### C - Emulation de l'attaque
+
+#### 1 - Déclenchement du webhook discord
+
+```bash
+# A exécuter 1 fois
+ping 192.168.56.30 -c 3 # l'IP correspond à celle de la VM3 (cible), l'option -c permet de définir l'envoie de 3 paquets.
+```
+
+![Capture du hookdiscord]()
+
+#### 2 - Visualisation des données d'alerte dans le dashboard.
+
+Sur le server (_Wazuh-server_), dans le module **Threat Hunting** et plus particulièrement dans la partie **Event**,
+je peux définir un filtre pour retrouver immédiatement l'information.
+Les filtres corespondent aux règles qui permettent :
+
+-   l'envoie d'un webhook : `rule.id:(100100)`
+-   l'envoie d'un email : `rule.id:(100101)`
+
+![Capture du dashboard]()
+
+## XIV - Perspectives et évolutions possibles
+
+Une fois le déploiement validé, plusieurs pistes s’offrent à moi&nbsp;:
+
+-   **Implémenter un IDS** : Ajouter Suricata à Wazuh afin de bénéficier du HIDS mis à dispositon par wazuh. [_source officiel_](https://documentation.wazuh.com/current/proof-of-concept-guide/integrate-network-ids-suricata.html)
+-   **Implémenter une détection des malware avec YARA** : Ajouter YARA pour permettre de détecter des malwares peut grandement améliorer la qualitée du SOC. [_source officiel_](https://documentation.wazuh.com/current/proof-of-concept-guide/detect-malware-yara-integration.html)
+-   **Implémenter l'API VirusTotal** : Ajouter une détection et une suppression des malwares en intégrant **VirusTotal** améliorera d'avantage la fiabilité du SOC. [_source officiel_](https://documentation.wazuh.com/current/proof-of-concept-guide/detect-remove-malware-virustotal.html)
+-   **Implémenter un Honeypot** : <mark>Aucune notion sur les outils qui suivent...</mark> Il est possible d'intégrer un pot de miel (_honeypot_) avec des outils comme : `Dionaea`, `Cowrie`.
+-   **Implémenter une sandbox** : <mark>Aucune notion sur l'outil qui suit...</mark> Une sandbox peut-être déployé avec `Cuckoo`.
+
 ## Conclusion
+
+L’intégration méthodique de briques open-source au sein de ce **Homelab minimal** consacré à la mise en oeuvre d'un **SOC**; démontre qu’il est tout à fait possible de construire un **écosystème de sécurité** solide et évolutif.
+
+En créant ce Homelab j'ai pris conscience de l'importance du **SOC** en général et j'ai pu découvrir les avantages qu'une entreprise peut avoir en mettant en place ce dernier.
+
+Lors de sa configuration, j'ai développé une vision **globale** des enjeux liés à la **surveillance**, la **détection** et la **réponse aux incidents**. Cette approche progressive me permet d’acquérir une **expertise concrète** et **réutilisable** dans différents contextes professionnels.
+
+Par ailleurs, l’**architecture** mise en place ici peut être **facilement transposée** au sein d’entreprises, grâce à sa **modularité** et son **interopérabilité** avec des solutions existantes.

@@ -1,0 +1,21 @@
+<!--
+  # Fichier : /var/ossec/etc/ossec.conf (WAZUH-AGENT)
+  # Ce bloc permet de surveiller les requêtes ICMP (ping) envoyées vers cette machine.
+-->
+<ossec_config>
+  <localfile>
+    <log_format>full_command</log_format> <!-- Analyse de sortie d'une commande -->
+    <alias>Surveillance des pings ICMP</alias> <!-- Nom de la règle -->
+    <command>sudo tcpdump -l -n icmp</command> <!-- Capture du trafic ICMP -->
+    <frequency>30</frequency> <!-- Exécution toutes les 30 secondes -->
+  </localfile>
+</ossec_config>
+
+<!--
+  # Redémarrez l'agent Wazuh pour appliquer les modifications : sudo systemctl restart wazuh-agent
+  # EMULATION DE L'ATTAQUE : A exécutez 1 ou plusieurs fois
+  ping 192.168.56.30 -c 3
+
+  # Visualisation des données d'alerte dans le dashboard. (Module Threat Hunting)
+  # Filtre : rule.id:(100052)
+-->

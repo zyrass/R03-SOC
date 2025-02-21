@@ -1,0 +1,29 @@
+<!-- 
+  #  Création d'une règle qui se déclenche à chaque lancement du programme Netcat.
+  #  Ajout des règles dans le fichier du server Wazuh situé : /var/ossec/etc/rules/local_rules.xml
+-->
+<group name="ossec,">
+  <rule id="100050" level="0">
+    <if_sid>530</if_sid>
+    <match>^ossec: output: 'process list'</match>
+    <description>List of running processes.</description>
+    <group>process_monitor,</group>
+  </rule>
+
+  <rule id="100051" level="7" ignore="900">
+    <if_sid>100050</if_sid>
+    <match>nc -l</match>
+    <description>netcat listening for incoming connections.</description>
+    <group>process_monitor,</group>
+  </rule>
+</group>
+
+<!--
+  # Redémarrez le manager Wazuh pour appliquer les modifications :
+  sudo systemctl restart wazuh-manager
+
+  # Visualisation des données d'alerte dans le dashboard. (Module Threat Hunting)
+  # Filtre : rule.id:(100051)
+-->
+
+

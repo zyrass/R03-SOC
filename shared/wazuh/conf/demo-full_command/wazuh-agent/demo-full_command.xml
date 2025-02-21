@@ -1,0 +1,38 @@
+<!--
+  # Fichier : /var/ossec/etc/ossec.conf (WAZUH-AGENT)
+  # Ce bloc permet de surveiller les requêtes ICMP (ping) envoyées vers cette machine.
+-->
+<ossec_config>
+
+  <!-- Définit un fichier ou une commande dont Wazuh doit analyser la sortie. -->
+  <localfile>
+
+    <!-- Indique que Wazuh doit exécuter une commande et analyser sa sortie. -->
+    <log_format>full_command</log_format> 
+    
+    <!-- Définit un alias pour identifier facilement cette configuration. -->
+    <alias>process list</alias> 
+    
+    <!-- 
+      Exécute la commande ps -e -o pid,uname,command, qui affiche la liste des processus en cours avec :
+      - pid : L'ID du processus
+      - uname : L'utilisateur qui l'exécute
+      - command : La commande complète lancée
+    -->
+    <command>ps -e -o pid,uname,command</command> 
+
+    <!-- Définit un intervalle de 30 secondes entre chaque exécution de la commande. -->
+    <frequency>30</frequency>
+  </localfile>
+</ossec_config>
+
+<!--
+  # Redémarrez l'agent Wazuh pour appliquer les modifications : sudo systemctl restart wazuh-agent
+  # Installez Netcat : sudo apt install ncat -y
+  
+  # EMULATION DE L'ATTAQUE : A exécutez pendant 30 secondes.
+  nc -l 8000
+
+  # Visualisation des données d'alerte dans le dashboard. (Module Threat Hunting)
+  # Filtre : rule.id:(100051)
+-->

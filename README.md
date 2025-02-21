@@ -54,7 +54,7 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
       - [1 - Déclenchement du webhook discord](#1---déclenchement-du-webhook-discord)
       - [2 - Visualisation des données d'alerte dans le dashboard.](#2---visualisation-des-données-dalerte-dans-le-dashboard)
   - [XIV - Perspectives et évolutions possibles](#xiv---perspectives-et-évolutions-possibles)
-  - [Conclusion](#conclusion)
+  - [XV - Conclusion](#xv---conclusion)
 
 <br>
 
@@ -791,20 +791,74 @@ Ce bloc permet de configurer l'envoie d'un email. **CETTE PARTIE SERA EGALEMENT 
 Ici, une fois un ping détecté **et répété cinq fois (5x) au minimum**, un envoie d'un email à un responsable est automatiquement déclenché. La gravité est établit au niveau 12.
 
 ```xml
-<ossec_config>
+<!--
+  # Fichier : /var/ossec/etc/ossec.conf (WAZUH-SERVER)
+  # Cette section configure les paramètres globaux du serveur Wazuh.
+  # Elle inclut l'envoi d'alertes par email et la gestion des logs.
+-->
+
+</ossec_config>
   <global>
-    <email_notification>yes</email_notification>
-    <email_to>responsable-assab@gmail.com</email_to> <!-- Adresse du destinataire -->
-    <smtp_server>smtp.example.com</smtp_server> <!-- Adresse du serveur SMTP -->
-    <email_from>wazuh-alert@example.com</email_from> <!-- Adresse d’envoi -->
+
+    <!--
+      # Formats et gestion des logs
+      # `jsonout_output` : Active l'export des logs en JSON (utile pour les intégrations externes)
+      # `alerts_log` : Active la journalisation des alertes
+      # `logall` et `logall_json` : Détermine si tous les logs doivent être enregistrés
+    -->
+    <jsonout_output>yes</jsonout_output> <!-- Logs JSON activés -->
+    <alerts_log>yes</alerts_log> <!-- Journalisation des alertes activée -->
+    <logall>no</logall> <!-- Ne journalise pas tous les logs (uniquement les alertes) -->
+    <logall_json>no</logall_json> <!-- Ne stocke pas tous les logs en JSON -->
+
+    <!--
+      # Paramètres de notification par email
+      # Permet d'envoyer des alertes aux administrateurs en cas d'événements critiques.
+    -->
+    <email_notification>yes</email_notification> <!-- Active l'envoi d'alertes par email -->
+    <smtp_server>smtp.gmail.com</smtp_server> <!-- Serveur SMTP utilisé pour l'envoi des emails -->
+    <email_from>wazuh@example.wazuh.com</email_from> <!-- Adresse email utilisée pour l'envoi des alertes -->
+    <email_to>responsable@gmail.com</email_to> <!-- Adresse email du destinataire des alertes -->
+    <email_maxperhour>12</email_maxperhour> <!-- Limite le nombre d'emails à 12 par heure -->
+    <email_log_source>alerts.log</email_log_source> <!-- Source des logs utilisés pour générer les alertes -->
+
+    <!--
+      # Gestion de la connexion des agents Wazuh
+      # `agents_disconnection_time` : Temps avant qu'un agent soit considéré comme déconnecté
+      # `agents_disconnection_alert_time` : Temps avant qu'une alerte soit générée en cas de déconnexion
+    -->
+    <agents_disconnection_time>10m</agents_disconnection_time> <!-- Un agent est marqué déconnecté après 10 min -->
+    <agents_disconnection_alert_time>0</agents_disconnection_alert_time> <!-- Génère immédiatement une alerte en cas de déconnexion -->
+
+    <!--
+      # Vérification des mises à jour du serveur Wazuh
+      # Permet de vérifier si des mises à jour sont disponibles.
+    -->
+    <update_check>yes</update_check> <!-- Active la vérification des mises à jour du serveur Wazuh -->
+
   </global>
 </ossec_config>
 ```
 
 **Explication**
 
--   **Niveau 12** : Envoi d’un email sur un serveur SMTP si 5 pings en 30s sont détectés.
--   **Serveur SMTP requis** : Remplace smtp.example.com par le serveur SMTP utilisé.
+-   Formats et gestion des logs
+    -   **jsonout_output** : Active l'export des logs au format JSON (_utile pour les intégrations externes_).
+    -   **alerts_log** : Active la journalisation des alertes.
+    -   **logall** : Désactive la journalisation de tous les événements (_seules les alertes sont enregistrées_).
+    -   **logall_json** : Désactive la journalisation de tous les événements au format JSON.
+-   Paramètres de notification par email -
+    -   **email_notification** : Active l'envoi d'alertes par email.
+    -   **smtp_server** : Spécifie le serveur SMTP utilisé pour l'envoi des emails (_ex: smtp.gmail.com_).
+    -   **email_from** : Définit l’adresse email qui enverra les alertes.
+    -   **email_to** : Adresse email du destinataire qui recevra les alertes.
+    -   **email_maxperhour** : Définit une limite d’envoi d’emails (_ex: 12 emails par heure_).
+    -   **email_log_source** : Spécifie la source des logs utilisés pour envoyer les alertes (_ex: alerts.log_).
+-   Gestion de la connexion des agents Wazuh
+    -   **agents_disconnection_time** : Temps avant qu'un agent soit considéré comme déconnecté (_ex: 10 minutes_).
+    -   **agents_disconnection_alert_time** : Délai avant qu’une alerte soit générée en cas de déconnexion d’un agent (_ici, immédiatement 0_).
+-   Vérification des mises à jour
+    -   **update_check** : Permet de vérifier si des mises à jour du serveur Wazuh sont disponibles.
 
 Une fois les règles et les configurations déployé, il me faut redémarrer le service Wazuh-manager pour appliquer les modifications.
 
@@ -845,7 +899,7 @@ Une fois le déploiement validé, plusieurs pistes s’offrent à moi&nbsp;:
 -   **Implémenter un Honeypot** : <mark>Aucune notion sur les outils qui suivent...</mark> Il est possible d'intégrer un pot de miel (_honeypot_) avec des outils comme : `Dionaea`, `Cowrie`.
 -   **Implémenter une sandbox** : <mark>Aucune notion sur l'outil qui suit...</mark> Une sandbox peut-être déployé avec `Cuckoo`.
 
-## Conclusion
+## XV - Conclusion
 
 L’intégration méthodique de briques open-source au sein de ce **Homelab minimal** consacré à la mise en oeuvre d'un **SOC**; démontre qu’il est tout à fait possible de construire un **écosystème de sécurité** solide et évolutif.
 

@@ -1,0 +1,17 @@
+alert icmp any any -> any any (msg:"[ALERTE ICMP SUSPECT] - Va à l'encontre des règles établies par l'entreprise"; sid:1000001; rev:21; classtype: r03-icmp;)
+
+# ===============================
+#        Explication des règles
+# ===============================
+
+# Cette règle déclenche une alerte lorsqu'un paquet ICMP est détecté.
+# ICMP est utilisé pour le diagnostic réseau, mais peut aussi être utilisé à des fins malveillantes , par exemple :
+#   - la reconnaissance
+#   - les attaques DoS
+#   - etc.
+
+# alert icmp -> Déclenche une alerte sur les paquets ICMP.
+# any any -> any any : Cette règle s'applique à tout le trafic ICMP, quelle que soit l'adresse source ou destination.
+# msg:"[ALERTE] - Ping ICMP détecté" -> Message affiché lors de la détection de l'événement.
+# sid:1000001 -> ID unique de la règle pour l'identification dans le système.
+# rev:1 -> Numéro de révision de la règle, utile pour le suivi des modifications et des mises à jour.

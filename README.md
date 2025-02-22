@@ -196,13 +196,13 @@ _Je me donne le droit de la modifier à tout moment_
 R03-SOC/
 │
 ├── README.md                       # Le fichier qui est actuellement lu
-├── .gitignore                      # Fichier permettant d'ignorer certains éléments permettant d'aléger le dépôt
+├── .gitignore                      # Permet d'ignorer certains éléments permettant d'aléger le dépôt
 ├── Vagrantfile                     # Fichier pour créer les machines virtuelles
-├── images/                         # Répertoire contenant toutes les illustrations proposées dans ce homelab
+├── images/                         # Répertoire contenant toutes les illustrations
 │   ├── configuration_reseau.png
 │   ├── schema_homelab_détaillés.jpg
 │   ├── schema_homelab.png
-├── schema/                         # Répertoire contenant toutes les schemas réaliser au format mermaid
+├── schema/                         # Répertoire contenant les schemas réaliser au format mermaid
 │   ├── configuration_reseau.mmd
 │   ├── schema_homelab.png
 ├── shared/                         # Répertoire communs à toutes les VMs
@@ -236,9 +236,7 @@ Le but recherché est simplement de collecter les logs qui auront été génér�
 Cet agent, devra envoyer au manager (_server-wazuh_ qui **n'existe pas**) les logs formatés.
 
 > **ATTENTION**<br>
-> Si un **PING (_ICMP_)** est détecté une fois, alors une alerte est envoyé sur un channel appelé "alert-wazuh" sur un server discord privée.
-> Si cette même alerte est lancée plus de 5x alors une alerte de niveau 12 est alors déclenché et donc,
-> un email est envoyé vers un responsable qui traitera directement l'information (_smtp_gmail_).
+> Si un **PING (_ICMP_)** est détecté une fois, alors une alerte est envoyé sur un channel appelé "alerte-wazuh" sur un server discord privée.
 
 Le but étant de solutionner rapidement l'information tout en ayant une traçabilité pour prouver toute tentative malveillante
 de tel ou tel utilisateur.
@@ -507,11 +505,11 @@ il suffit d'exécuter le script d'instalation et d'attendre que tout est bien in
 > Mais dans les faits, il n'en ai rien et il faut prendre son mal en patience.
 
 ```bash
-# Toujours au même endroit sans s'être déplacer dans un dossier, on exécute le script d'installation de l'assistant avec la commande :
+# Exécution immédiate du script téléchargé "wazuh-install.sh" :
 sudo bash wazuh-install.sh -a
 ```
 
-> **NOTE IMPORTANTE**<br> > _**L'identifiant et le mot de passe de connexion au dashboard de Wazuh sera communiquer à la fin de l'installation.**_<br> > **Il faut penser à l'inclure dans le `.env` situé à la racine du projet.**
+> **NOTE IMPORTANTE**<br> _L'identifiant et le mot de passe de connexion au dashboard de Wazuh sera communiquer à la fin de l'installation._ De plus, **Il faut penser à l'inclure dans le `.env` situé à la racine du projet.**
 
 **Fichier .env** :
 
@@ -533,7 +531,8 @@ sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y
 **Retour sur la VM1 (SIEM)**
 
 ```bash
-# Il est impératif d'éviter une monté de version ce qui aurait pour effet de casser la connexion entre les services.
+# Il est impératif d'éviter une monté de version.
+# Ce qui aurait pour effet de casser la connexion entre les services.
 sudo sed -i "s/^deb /#deb /" /etc/apt/sources.list.d/wazuh.list
 sudo apt update
 ```
@@ -652,14 +651,14 @@ sudo systemctl restart wazuh-manager
 Sur la machine virtuelle attaquante, il s'agit de lancer pendant 30 secondes la commande ci-dessous.
 
 ```bash
-#
+# exécute la commande netcat
 nc -l 8000
 ```
 
 #### 4 - visualisation des alertes sur le dashboard de wazuh
 
 Je peux visualiser les données d'alerte dans le tableau de bord Wazuh (_dashboard_).
-Pour ça je me rends dans le module `Threat Hunting` et j'ajoute un filtre (`rule.id:(100051)`) dans la barre de recherche.
+Pour ça je me rends dans le module `Threat Hunting` et j'ajoute un filtre (`rule.id:(100100)`) dans la barre de recherche.
 
 <br>
 

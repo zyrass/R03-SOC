@@ -1274,13 +1274,7 @@ nano /etc/suricata/rules/r03-icmp.rules
 #   - Surveille tout ICMP partant de 192.168.56.20 vers 192.168.56.30.
 #   - Déclenche une alerte si VM2 émet un ping (ou tout ICMP) vers VM3.
 
-alert icmp 192.168.56.20 any -> 192.168.56.30 any (
-    msg:"[ALERTE] VM2 ne respecte pas les règles internes : ping ICMP vers VM3";
-    classtype:r03-icmp;
-    sid:1000001;
-    rev:1;
-    priority:1;
-)
+alert icmp 192.168.56.20 any -> 192.168.56.30 any (msg:"[ALERTE] VM2 ne respecte pas les règles internes : ping ICMP vers VM3";classtype:r03-icmp;sid:1000001;rev:1;priority:1;)
 
 # RÈGLE 2 : VM3 ne respecte pas les règles internes (Ping ICMP vers VM3)
 # ----------------------------------------------------------------------------
@@ -1288,13 +1282,7 @@ alert icmp 192.168.56.20 any -> 192.168.56.30 any (
 #   - Surveille tout ICMP partant de 192.168.56.30 vers 192.168.56.20.
 #   - Déclenche une alerte si VM3 émet un ping (ou tout ICMP) vers VM2.
 
-alert icmp 192.168.56.30 any -> 192.168.56.30 any (
-    msg:"[ALERTE] VM3 ne respecte pas les règles internes : ping ICMP vers VM2";
-    classtype:r03-icmp;
-    sid:1000002;
-    rev:1;
-    priority:1;
-)
+alert icmp 192.168.56.30 any -> 192.168.56.30 any (msg:"[ALERTE] VM3 ne respecte pas les règles internes : ping ICMP vers VM2";classtype:r03-icmp;sid:1000002;rev:1;priority:1;)
 
 ###################################################################################
 # VICTIME
@@ -1306,13 +1294,7 @@ alert icmp 192.168.56.30 any -> 192.168.56.30 any (
 #   - Surveille tout ICMP entrant vers 192.168.56.20, provenant de n'importe où.
 #   - Déclenche une alerte si VM2 reçoit un ping (ou tout ICMP).
 
-alert icmp any any -> 192.168.56.20 any (
-    msg:"[ALERTE] VM2 subit un ping malveillant";
-    classtype:r03-icmp;
-    sid:1000003;
-    rev:1;
-    priority:1;
-)
+alert icmp any any -> 192.168.56.20 any (msg:"[ALERTE] VM2 subit un ping malveillant";classtype:r03-icmp;sid:1000003;rev:1;priority:1;)
 
 # RÈGLE 4 : VM3 subit un ping malveillant (tout trafic ICMP reçu par VM3)
 # ----------------------------------------------------------------------------
@@ -1320,13 +1302,7 @@ alert icmp any any -> 192.168.56.20 any (
 #   - Surveille tout ICMP entrant vers 192.168.56.30, provenant de n'importe où.
 #   - Déclenche une alerte si VM3 reçoit un ping (ou tout ICMP).
 
-alert icmp any any -> 192.168.56.30 any (
-    msg:"[ALERTE] VM3 subit un ping malveillant";
-    classtype:r03-icmp;
-    sid:1000004;
-    rev:1;
-    priority:1;
-)
+alert icmp any any -> 192.168.56.30 any (msg:"[ALERTE] VM3 subit un ping malveillant";classtype:r03-icmp;sid:1000004;rev:1;priority:1;)
 ```
 
 **Explication d'une règle**

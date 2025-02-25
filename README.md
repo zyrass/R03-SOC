@@ -1614,8 +1614,8 @@ $$
 $$
 
 &nbsp;<center>
-![Contenu rapport incident](./images/rapport/kpi.png)<br>
-_figure 48 : Kpi pour convaincre sa hiérarchie._
+![Contenu rapport incident](./images/rapport/figure_48.png)<br>
+_figure 48 : Kpi pour convaincre sa hiérarchie_
 
 </center>
 

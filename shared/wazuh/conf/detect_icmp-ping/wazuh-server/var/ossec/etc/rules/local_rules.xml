@@ -1,61 +1,62 @@
 <!-- ======================================================================================================================= -->
-<!--    Règles locales     -->
-<!-- ======================================================================================================================= -->
-
+<!-- Règles locales     -->
 <!-- Ce fichier contient des règles personnalisées pour Wazuh afin de détecter des événements spécifiques. -->
 <!-- Vous pouvez modifier ces règles en fonction de vos besoins en matière de surveillance et de sécurité. -->
-
 <!-- Définition d'un groupe de règles spécifiques à plusieurs sources de logs -->
+<!-- ======================================================================================================================= -->
+
 <group name="local,syslog,sshd">
-
   <!-- ======================================================================================================================= -->
-  <!--   Exemple de règle    -->
+  <!-- Exemple de règle    -->
+  <!-- Cette règle permet de détecter une tentative de connexion SSH ayant échoué. -->
+  <!-- Elle est basée sur l'ID de règle 5716, ce qui signifie qu'elle hérite des conditions de cette règle -->
+  <!-- tout en ajoutant des critères spécifiques. -->
   <!-- ======================================================================================================================= -->
-  
-  <!--
-      Cette règle permet de détecter une tentative de connexion SSH ayant échoué.
-      Elle est basée sur l'ID de règle 5716, ce qui signifie qu'elle hérite des conditions de cette règle tout en ajoutant des critères spécifiques.
-  -->
-  <rule id="100001" level="5">
-    <!-- Cette règle est appliquée si une alerte correspondant à la règle avec l'ID 5716 est détectée -->
-    <if_sid>5716</if_sid>
-    
-    <!-- Condition spécifique : l'IP source doit être 1.1.1.1 -->
-    <srcip>1.1.1.1</srcip>
-    
-    <!-- Description de l'événement qui sera affichée dans les logs Wazuh -->
-    <description>sshd: authentication failed from IP 1.1.1.1.</description>
-    
-    <!-- Catégorisation de l'alerte -->
-    <group>authentication_failed,pci_dss_10.2.4,pci_dss_10.2.5</group>
+    <rule id="100001" level="5">
+    <if_sid>5716</if_sid> <!-- Règle appliquée si l'alerte correspond à la règle avec l'ID 5716 qui est détectée -->
+    <srcip>1.1.1.1</srcip> <!-- Condition spécifique : l'IP source doit être 1.1.1.1 -->
+    <description>sshd: authentication failed from IP 1.1.1.1.</description> <!-- Description de l'événement qui sera affichée dans les logs Wazuh -->
+    <group>authentication_failed,pci_dss_10.2.4,pci_dss_10.2.5</group> <!-- Catégorisation de l'alerte -->
   </rule>
-
 </group>
 
 <!-- ======================================================================================================================= -->
 <!-- Règles pour Suricata -->
+<!-- R03 - Définition d'un groupe de règles spécifique à Suricata et à la détection des pings ICMP -->
+<!-- Les règles ci-dessous permettent de détecter les alertes ICMP générées par Suricata. -->
+<!-- L'objectif est d'identifier les pings ICMP entre machines afin de surveiller une activité réseau anormale ou interdite. -->
 <!-- ======================================================================================================================= -->
+<group name="suricata,icmp,ping">  
 
-<!-- Définition d'un groupe de règles spécifique à Suricata et à la détection des pings ICMP -->
-<group name="suricata,icmp,ping">
-  
-  <!-- ======================================================================================================================= -->
-  <!-- Détection des pings ICMP    -->
-  <!-- ======================================================================================================================= -->
-  
-  <!--
-      Cette règle permet de détecter les alertes ICMP générées par Suricata.
-      L'objectif est d'identifier les pings ICMP entre machines afin de surveiller une activité réseau anormale ou interdite.
-  -->
-  <rule id="100002" level="6">
-    
-    <!-- Déclaration que l'entrée log est encodée en JSON (requis pour Suricata) -->
+  <!-- VM2 vers VM3 -->
+  <rule id="200001" level="6">
     <decoded_as>json</decoded_as>
-    
-    <!-- Condition : l'alerte Suricata doit contenir une signature spécifique indiquant un ping ICMP -->
-    <field name="alert.signature">[ALERTE] - Ping ICMP détecté</field>
-    
-    <!-- Description dynamique de l'événement. Elle inclut l'IP source et l'IP destination pour plus de détails -->
-    <description>Ping ICMP détecté : $src_ip ($user) vers $dest_ip - Va à l'encontre des règles établies par l'entreprise.</description>
+    <field name="alert.signature_id">1000001</field>
+    <field name="alert.signature" regex="\[ALERTE\] VM2.*" />
+    <description>Suricata: Ping de VM2 vers VM3 détecté (SID 1000001)</description>
+  </rule>
+
+  <!-- VM3 vers VM2 -->
+  <rule id="200002" level="6">
+    <decoded_as>json</decoded_as>
+    <field name="alert.signature_id">1000002</field>
+    <field name="alert.signature" regex="\[ALERTE\] VM3.*" />
+    <description>Suricata: Ping de VM3 vers VM2 détecté (SID 1000002)</description>
+  </rule>
+
+  <!-- VM2 subit un ping -->
+  <rule id="200003" level="6">
+    <decoded_as>json</decoded_as>
+    <field name="alert.signature_id">1000003</field>
+    <field name="alert.signature" regex="\[ALERTE\] VM2.*" />
+    <description>Suricata: VM2 subit un ping malveillant (SID 1000003)</description>
+  </rule>
+
+  <!-- VM3 subit un ping -->
+  <rule id="200004" level="6">
+    <decoded_as>json</decoded_as>
+    <field name="alert.signature_id">1000004</field>
+    <field name="alert.signature" regex="\[ALERTE\] VM3.*" />
+    <description>Suricata: VM3 subit un ping malveillant (SID 1000004)</description>
   </rule>
 </group>

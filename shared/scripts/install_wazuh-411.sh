@@ -25,7 +25,7 @@ echo -e "${BLUE} # =============================================================
 
 # Téléchargement de l'assistant d'installation de Wazuh
 echo -e "\n\t${GREEN}[1/2] Téléchargement de l'assistant d'installation de Wazuh...${NC}"
-sudo curl -sO https://packages.wazuh.com/4.10/wazuh-install.sh
+sudo curl -sO https://packages.wazuh.com/4.11/wazuh-install.sh
 
 # Créer un fichier temporaire pour indiquer que l'installation est terminée
 echo -e "\n\t${GREEN}[2/2] Création du marqueur d'installation...${NC}"

@@ -18,10 +18,17 @@ flowchart TB
     WAZUH_AGENT_VMB[Wazuh agent]
   end
 
-  subgraph VM_C [" "]
-    VM3[Ubuntu - VM 3]
-    WAZUH_AGENT_VMC[Wazuh agent]
-    LOG_DISPONIBLE[/Logs enregistré/]
+  subgraph GROUPE [" "]
+    subgraph VM_C [" "]
+      VM3[Ubuntu - VM 3]
+      WAZUH_AGENT_VMC[Wazuh agent]
+      LOG_DISPONIBLE[/Logs enregistré/]
+    end
+
+    subgraph VM_D [" "]
+      DISCORD_CHANNEL[Channel Alerte-Wazuh]
+      DISCORD[Server discord]
+    end
   end
 
   PING[/Ping Interdit/]
@@ -36,6 +43,7 @@ flowchart TB
   WAZUH_AGENT_VMB -->|Collecte les logs| LOG_DISPONIBLE
   WAZUH_AGENT_VMB -->|Envoie| WAZUH_SERVER
   WAZUH_SERVER --> |Analyse et envoie| WAZUH_INDEXER
+  WAZUH_SERVER --> |Envoie une notification|DISCORD
   WAZUH_DASHBOARD --> |Se connecte| WAZUH_INDEXER
 
   %% Palette de couleurs flat et classes (https://flatuicolors.com/palette/es)
@@ -52,11 +60,12 @@ flowchart TB
 
   %% Affectation des classes
   class HOTE hote
-  class SIEM,VM2,VM3 vm
+  class SIEM,VM2,VM3,DISCORD_CHANNEL vm
   class PING ping
   class LOG_DISPONIBLE log
   class WAZUH_AGENT_VMB,WAZUH_AGENT_VMC wazuh_agent
   class WAZUH_SERVER wazuh_server
   class WAZUH_INDEXER wazuh_indexer
-  class WAZUH_DASHBOARD wazuh_dashboard
-  class TOP,VM_A,VM_B,VM_C bg
+  class WAZUH_DASHBOARD,DISCORD wazuh_dashboard
+  class TOP,VM_A,VM_B,VM_C,VM_D bg
+  class GROUPE none

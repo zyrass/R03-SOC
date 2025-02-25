@@ -29,7 +29,7 @@ NODES = {
     ip_private: '192.168.56.10',
     memory: 8192,
     cpus: 4,
-    scripts: ['wazuh']
+    scripts: ['wazuh-411']
   },
   'vm2' => {
     hostname: 'r03-vm2-attaquant',
@@ -69,7 +69,7 @@ Vagrant.configure("2") do |config|
       if NETWORK_MODE == "public_network"
         node.vm.network "public_network", ip: node_config[:ip_public], auto_config: true, bridge: BRIDGE_INTERFACE
       else
-        node.vm.network "private_network", ip: node_config[:ip_private], auto_config: true, bridge: BRIDGE_INTERFACE
+        node.vm.network "private_network", ip: node_config[:ip_private], auto_config: true
       end
 
       # Dossier partagé

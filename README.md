@@ -1588,7 +1588,7 @@ Une fois qu'on a pu faire une certaine investigation, nous pouvons générer des
 alors ici il s'agit d'un rapport généré sans une quelconque modification mais il est tout à fait possible de paramétrer ce dernier dans les options de wazuh.
 
 &nbsp;<center>
-![Rapport incident](./images/rapport/figure_46.png)<br>
+![Rapport incident](./images/projet/figure_46.png)<br>
 _figure 46 : Page de garde du rapport d'incident._
 
 </center>
@@ -1596,7 +1596,7 @@ _figure 46 : Page de garde du rapport d'incident._
 <br>
 
 &nbsp;<center>
-![Contenu rapport incident](./images/rapport/figure_47.png)<br>
+![Contenu rapport incident](./images/projet/figure_47.png)<br>
 _figure 47 : contenu du rapport d'incident._
 
 </center>
@@ -1614,7 +1614,7 @@ $$
 $$
 
 &nbsp;<center>
-![Contenu rapport incident](./images/rapport/figure_48.png)<br>
+![Contenu rapport incident](./images/projet/figure_48.png)<br>
 _figure 48 : Kpi pour convaincre sa hiérarchie_
 
 </center>

@@ -66,7 +66,6 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
       - [4 - KPIs](#4---kpis)
   - [XIV - Axes de développement et améliorations envisagées](#xiv---axes-de-développement-et-améliorations-envisagées)
   - [XV - Conclusion](#xv---conclusion)
-  - [XVI - Bonus - Réflexion d'un SOC bien plus complet.](#xvi---bonus---réflexion-dun-soc-bien-plus-complet)
 
 <br>
 
@@ -1578,22 +1577,8 @@ Suite à la validation du déploiement initial et selon mes recherches sur le su
 -   **Déploiement d'un système Honeypot** : L'implémentation d'un leurre de sécurité serait possible via des solutions telles que `Dionaea` ou `Cowrie`. Ces outils restent à explorer en détail.
 -   **Mise en place d'un environnement sandbox** : Une solution d'analyse comportementale pourrait être déployée via `Cuckoo`. Cette technologie nécessite une étude approfondie.
 
-<br>
-
----
-
-<br>
-
-## XV - Conclusion
-
-L'intégration méthodique des composants open-source dans ce **laboratoire de test** dédié à l'implémentation d'un **SOC** démontre la viabilité de construire une **infrastructure de sécurité** robuste et adaptable. Cette expérience pratique m'a permis d'approfondir ma compréhension de l'importance stratégique du **SOC** et d'identifier les bénéfices tangibles qu'une entreprise/organisation peut en retirer.
-
-Le processus de configuration m'a apporté une perspective **complète** des aspects critiques de la **surveillance**, la **détection** et la **gestion des incidents**. Cette méthodologie structurée m'a permis de développer des **compétences pratiques** et **transférables** applicables à divers environnements professionnels. En outre, l'**infrastructure** développée présente un potentiel d'**adaptation significatif** pour les entreprises, notamment grâce à son **architecture modulaire** et sa **compatibilité** avec les solutions existantes.
-
-## XVI - Bonus - Réflexion d'un SOC bien plus complet.
-
-Il s'agit d'une idée d'un SOC à mettre en place avec bien entendu une réflexion complète sur l'infrastructure.
-Chaque capture d'écran est un HomeLab qui prends en considération le HomeLab précédent tout en ajoutant une nouvelle brique.
+Comme axe d'amélioration, j'ai songé à un SOC comprenant l'ajout progressif d'outils permettant de rendre le concept bien plus complet.
+Chaque capture d'écran qui suit est un HomeLab qui prends en considération le HomeLab précédent seule ce qui est nouveau est mis en couleur.
 
 &nbsp;<center>
 ![Bonus_01](./images/bonus/bonus_1.png)<br>
@@ -1624,3 +1609,15 @@ _figure xx : Quatrième HomeLab._
 _figure xx : Cinquième HomeLab._
 
 </center>
+
+<br>
+
+---
+
+<br>
+
+## XV - Conclusion
+
+L'intégration méthodique des composants open-source dans ce **laboratoire de test** dédié à l'implémentation d'un **SOC** démontre la viabilité de construire une **infrastructure de sécurité** robuste et adaptable. Cette expérience pratique m'a permis d'approfondir ma compréhension de l'importance stratégique du **SOC** et d'identifier les bénéfices tangibles qu'une entreprise/organisation peut en retirer.
+
+Le processus de configuration m'a apporté une perspective **complète** des aspects critiques de la **surveillance**, la **détection** et la **gestion des incidents**. Cette méthodologie structurée m'a permis de développer des **compétences pratiques** et **transférables** applicables à divers environnements professionnels. En outre, l'**infrastructure** développée présente un potentiel d'**adaptation significatif** pour les entreprises, notamment grâce à son **architecture modulaire** et sa **compatibilité** avec les solutions existantes.

@@ -1197,7 +1197,7 @@ Création de plusieurs règles permettant de différenciés chaque alerte.
     -   **`level="6"`** : Permet de définir un niveau de gravité qui n'a rien avoir avec le niveau de priorité propre à Suricata.
     -   **`<decoded_as>json</decoded_as>`** : Permet de définir le format des alertes
     -   **`<field name="alert.signature_id">1000001</field>`** : Permet de définir l'identifiant associé à la règle de Suricata spécifique.
-    -   **`<field name="alert.signature" regex="\[ALERTE\] VM2.*" /></field>`** : Permet de matché la signature exclusivement avec **[ALERTE].\*VM2.\*"**
+    -   **`<field name="alert.signature" regex="\[ALERTE\] VM2.*" />`** : Permet de matché la signature exclusivement avec **[ALERTE].\*VM2.\*"**
     -   **`<description> ... </description>`** : Permet de définir une desciption afin de reconnaître le type d'alerte.
 
 ### C - Configuration des Agents Wazuh de Surveillance

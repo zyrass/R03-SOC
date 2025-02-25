@@ -60,13 +60,14 @@ Ce projet propose la mise en oeuvre d’un **Security Operations Center** (**SOC
       - [1 - quel est le rôle d'un agent ?](#1---quel-est-le-rôle-dun-agent-)
       - [2 - Installation et configuration de suricata (IDS)](#2---installation-et-configuration-de-suricata-ids)
     - [D - Emulation de l'attaque](#d---emulation-de-lattaque)
-      - [1 - Déclenchement du webhook discord](#1---déclenchement-du-webhook-discord)
-      - [2 - Visualisation des données d'alerte dans le dashboard.](#2---visualisation-des-données-dalerte-dans-le-dashboard)
-      - [3 - Définition des Rapports](#3---définition-des-rapports)
-      - [4 - KPIs](#4---kpis)
+      - [1 - Lancement du Ping malveillant](#1---lancement-du-ping-malveillant)
+      - [2 - Déclenchement du webhook discord](#2---déclenchement-du-webhook-discord)
+      - [3 - Visualisation des données d'alerte dans le dashboard.](#3---visualisation-des-données-dalerte-dans-le-dashboard)
+      - [4 - Le Framework Mitre ATT\&CK](#4---le-framework-mitre-attck)
+      - [5 - Génération des Rapports](#5---génération-des-rapports)
+      - [6 - Création d'un KPI](#6---création-dun-kpi)
   - [XIV - Axes de développement et améliorations envisagées](#xiv---axes-de-développement-et-améliorations-envisagées)
   - [XV - Conclusion](#xv---conclusion)
-  - [XVI - Bonus - Réflexion d'un SOC bien plus complet.](#xvi---bonus---réflexion-dun-soc-bien-plus-complet)
 
 <br>
 
@@ -1457,25 +1458,91 @@ Ce qu'il faut comprendre c'est que la VM2, dispose d'un utilisateur malveillant 
 
 > Il s'est simplement dit : "Personne ne pourra savoir que c'est moi qui ait fait ça !!"
 
-#### 1 - Déclenchement du webhook discord
+#### 1 - Lancement du Ping malveillant
 
 ```bash
-# A exécuter 1 fois
+# Exécuter 1 fois depuis la VM2 (Attaquant)
 ping -c 1 192.168.56.30 # l'IP correspond à celle de la VM3 (cible), l'option -c permet de définir l'envoie d'un seul paquet sur le réseau.
 ```
 
-![Ping](./images/projet/figure_34.png)
+&nbsp;<center>
+![Ping](./images/projet/figure_34.png)<br>
+_figure 34 : Lancement d'un Ping malveillant._
 
-#### 2 - Visualisation des données d'alerte dans le dashboard.
+</center>
 
-Sur le server (_Wazuh-server_), dans le module **Threat Hunting** et plus particulièrement dans la partie **Event**,
-je peux définir un filtre pour retrouver immédiatement l'information.
-Les filtres corespondent aux règles qui permettent :
+#### 2 - Déclenchement du webhook discord
 
--   l'envoie d'un webhook : `rule.id:(100100)`
--   l'envoie d'un email : `rule.id:(100101)`
+<br>
 
-![Capture du dashboard]()
+> [!NOTE]
+> Un déclenchement sur Discord sera exécuté une fois que wazuh fera le contrôle. Le but étant de rendre ceci presque instantanné mais cela nécessite des ressources supplémentaire.
+
+&nbsp;<center>
+![alerte discord](./images/projet/figure_35.png)<br>
+_figure 35 : Déclenchement de l'alerte Discord._
+
+</center>
+
+<br>
+
+**Si je m'absente un certain temps, j'obtiens une information importante sur le `nombre d'incident depuis ma dernière activité`.**
+
+&nbsp;<center>
+![notification discord](./images/projet/figure_36.png)<br>
+_figure 36 : Notification de plusieurs incidents suite à ma dernière activité._
+
+</center>
+
+&nbsp;<center>
+![Plusieurs déclenchements détecté](./images/projet/figure_37.png)<br>
+_figure 37 : Plusieurs déclenchements détectés._
+
+</center>
+
+#### 3 - Visualisation des données d'alerte dans le dashboard.
+
+L'information est découverte via discord, je me rends directement sur le Dashboard de Wazuh et plus particulièrement dans `Threat Hunting` pour comprendre ce qu'il se passe. (_Voir figure 20, pour savoir où se trouve le bloc en question_)
+
+&nbsp;<center>
+![Page threat hunting](./images/projet/figure_38.png)<br>
+_figure 38 : Section général "Threat Hunting"._
+
+</center>
+
+<br>
+
+Afin de comprendre l'alerte sur discord, tout en haut je vais filtrer avec le terme **`suricata`**.
+
+&nbsp;<center>
+![Page threat hunting](./images/projet/figure_39.png)<br>
+_figure 39 : Section général "Threat Hunting" avec filtre "suricata"._
+
+</center>
+
+Une fois filtré je passe sur l'onglet **`Event`** qui me permet d'avoir une vue d'ensemble de ce qu'il s'est passé.
+
+&nbsp;<center>
+![Vue d'ensemble event](./images/projet/figure_40.png)<br>
+_figure 40 : Vue d'ensemble des évènements détectés"._
+
+</center>
+
+Je choisie une ligne aléatoire et je clic sur la petite loupe à gauche afin d'ouvrir la fenêtre consacré aux détails de l'alerte.
+
+&nbsp;<center>
+![Vue d'ensemble event](./images/projet/figure_41.png)<br>
+_figure 41 : Détails d'une alerte - partie 1/2"._
+
+</center>
+
+<br>
+
+&nbsp;<center>
+![Vue d'ensemble event](./images/projet/figure_42.png)<br>
+_figure 42 : Détails d'une alerte - partie 2/2"._
+
+</center>
 
 <br>
 
@@ -1483,28 +1550,60 @@ Les filtres corespondent aux règles qui permettent :
 
 <br>
 
-#### 3 - Définition des Rapports
+#### 4 - Le Framework Mitre ATT&CK
+
+Les éléments précédents me permette déjà de comprendre ce qu'il s'est passé. Mais pour améliorer mes connaissances, `Wazuh` implémente le framework `Mitre ATT&CK` qui me permet de tout simplement bénéficier d'un `cadre technique et tactique sur les attaques utilisés de manière générale`. Je peux ainsi améliorer mes compétences dans un domaine clé.
+
+> **Je n'ai pas eu le temps de me plonger dedans mais c'est très intéressant**.
+
+Dans la section `Threat Hunting`, avec le filtre `suricata` (_voir la figure 39_) j'ai un encard spécifique au framework avec un élément remonté. Il s'agit d'une information qui a été relevé.
+
+Pour voir le contenu de ce cadre, il faut de nouveau se rendre sur l'accueil (_voir figure 20_) et se rendre dans la partie **`Mitre Att&CK`**.
+
+&nbsp;<center>
+![Section Mitre ATT&CK](./images/projet/figure_43.png)<br>
+_figure 43 : Section Mitre ATT&Ck"._
+
+</center>
+
+une fois filtré avec le terme `suricata`, j'obtiens des informations relative aux attaques subbi.
+
+&nbsp;<center>
+![Section Mitre ATT&CK](./images/projet/figure_44.png)<br>
+_figure 44 : Section Mitre ATT&Ck filtré avec "Suricata"._
+
+</center>
+
+Pour en savoir plus, il faut se rendre dans chacun des onglets afin de comprendre ce qui a été relevé. Ici : **`Sudo and Sudo Caching`** qui a été remonté.
+
+&nbsp;<center>
+![Section Mitre ATT&CK](./images/projet/figure_45.png)<br>
+_figure 45 : Onglet "framework" avec le détail de ce qui a été remonté au niveau des alertes._
+
+</center>
+
+#### 5 - Génération des Rapports
 
 Une fois qu'on a pu faire une certaine investigation, nous pouvons générer des rapports sur les faits.
 alors ici il s'agit d'un rapport généré sans une quelconque modification mais il est tout à fait possible de paramétrer ce dernier dans les options de wazuh.
 
 &nbsp;<center>
-![Rapport incident](./images/rapport/figure_xx.png)<br>
-_figure xx : Page de garde du rapport d'incident._
+![Rapport incident](./images/rapport/figure_46.png)<br>
+_figure 46 : Page de garde du rapport d'incident._
 
 </center>
 
 <br>
 
 &nbsp;<center>
-![Contenu rapport incident](./images/rapport/figure_yy.png)<br>
-_figure xx : contenu du rapport d'incident._
+![Contenu rapport incident](./images/rapport/figure_47.png)<br>
+_figure 47 : contenu du rapport d'incident._
 
 </center>
 
 <br>
 
-#### 4 - KPIs
+#### 6 - Création d'un KPI
 
 En prenant en compte uniquement les deux premières lignes, nous pouvons calculer des ratios sur la fiabilité de la politique de sécurité sur l'interdiction du ping ICMP.
 
@@ -1516,7 +1615,7 @@ $$
 
 &nbsp;<center>
 ![Contenu rapport incident](./images/rapport/kpi.png)<br>
-_figure zz : Kpi pour convaincre._
+_figure 48 : Kpi pour convaincre sa hiérarchie._
 
 </center>
 
@@ -1554,22 +1653,8 @@ Suite à la validation du déploiement initial et selon mes recherches sur le su
 -   **Déploiement d'un système Honeypot** : L'implémentation d'un leurre de sécurité serait possible via des solutions telles que `Dionaea` ou `Cowrie`. Ces outils restent à explorer en détail.
 -   **Mise en place d'un environnement sandbox** : Une solution d'analyse comportementale pourrait être déployée via `Cuckoo`. Cette technologie nécessite une étude approfondie.
 
-<br>
-
----
-
-<br>
-
-## XV - Conclusion
-
-L'intégration méthodique des composants open-source dans ce **laboratoire de test** dédié à l'implémentation d'un **SOC** démontre la viabilité de construire une **infrastructure de sécurité** robuste et adaptable. Cette expérience pratique m'a permis d'approfondir ma compréhension de l'importance stratégique du **SOC** et d'identifier les bénéfices tangibles qu'une entreprise/organisation peut en retirer.
-
-Le processus de configuration m'a apporté une perspective **complète** des aspects critiques de la **surveillance**, la **détection** et la **gestion des incidents**. Cette méthodologie structurée m'a permis de développer des **compétences pratiques** et **transférables** applicables à divers environnements professionnels. En outre, l'**infrastructure** développée présente un potentiel d'**adaptation significatif** pour les entreprises, notamment grâce à son **architecture modulaire** et sa **compatibilité** avec les solutions existantes.
-
-## XVI - Bonus - Réflexion d'un SOC bien plus complet.
-
-Il s'agit d'une idée d'un SOC à mettre en place avec bien entendu une réflexion complète sur l'infrastructure.
-Chaque capture d'écran est un HomeLab qui prends en considération le HomeLab précédent tout en ajoutant une nouvelle brique.
+Comme axe d'amélioration, j'ai songé à un SOC comprenant l'ajout progressif d'outils permettant de rendre le concept bien plus complet.
+Chaque capture d'écran qui suit est un HomeLab qui prends en considération le HomeLab précédent seule ce qui est nouveau est mis en couleur.
 
 &nbsp;<center>
 ![Bonus_01](./images/bonus/bonus_1.png)<br>
@@ -1600,3 +1685,15 @@ _figure xx : Quatrième HomeLab._
 _figure xx : Cinquième HomeLab._
 
 </center>
+
+<br>
+
+---
+
+<br>
+
+## XV - Conclusion
+
+L'intégration méthodique des composants open-source dans ce **laboratoire de test** dédié à l'implémentation d'un **SOC** démontre la viabilité de construire une **infrastructure de sécurité** robuste et adaptable. Cette expérience pratique m'a permis d'approfondir ma compréhension de l'importance stratégique du **SOC** et d'identifier les bénéfices tangibles qu'une entreprise/organisation peut en retirer.
+
+Le processus de configuration m'a apporté une perspective **complète** des aspects critiques de la **surveillance**, la **détection** et la **gestion des incidents**. Cette méthodologie structurée m'a permis de développer des **compétences pratiques** et **transférables** applicables à divers environnements professionnels. En outre, l'**infrastructure** développée présente un potentiel d'**adaptation significatif** pour les entreprises, notamment grâce à son **architecture modulaire** et sa **compatibilité** avec les solutions existantes.
